@@ -1,6 +1,6 @@
 {
   "name": "jsoi",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A minimalistic, zero dependency javascript library that can perform string interpolation recursively over javascript objects preserving types. Great for dynamic configuration loading, supports asynchronous loading of objects with user defined callbacks in NodeJS or in a browser.",
   "author": "Kevin McGraw",
   "main": "dist/interpolation_objects_min.js",
@@ -14,7 +14,6 @@
     "replace",
     "parameterization"
   ],
-
   "bin": {
     "jsoi-cli": "./dist/interpolation_file_template.js"
   },
@@ -26,7 +25,7 @@
   "homepage": "https://github.com/code4ward/jsoi",
   "scripts": {
     "deploy_gh_pages": "gh-pages -d dist && node utils/create_tag_on_dist.js",
-    "rename_pkg_to_latest":"node utils/file_helper.js RenamePkgToLatest",
+    "rename_pkg_to_latest": "node utils/file_helper.js RenamePkgToLatest",
     "pack_dist": "cd dist && npm pack && rename_pkg_to_latest",
     "version_dist_package": "node utils/copy_pkg_version.js",
     "cpy_dist_package": "node utils/file_helper.js copy build_assets/package_dist.json dist/package.json",
