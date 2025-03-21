@@ -124,7 +124,7 @@ npm run build
 ```
 ## Deploying in your project
 ### Prebuilt javascript
-There are existing prebuilt uptodate library files located here:  ['dist' folder](dist).
+The last build version and instructions on deployment, minimized and non minimized versions can be found here:  [JSOI distribution](https://code4ward.github.io/JSOI/).
 
 ### Install with npm
 Currently not supported

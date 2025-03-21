@@ -1,8 +1,19 @@
 {
   "name": "jsoi",
-  "version": "1.0.0",
+  "version": "1.0.17",
   "description": "A minimalistic, zero dependency javascript library that can perform string interpolation recursively over javascript objects preserving types. Great for dynamic configuration loading, supports asynchronous loading of objects with user defined callbacks in NodeJS or in a browser.",
+  "author": "Kevin McGraw",
   "main": "dist/interpolation_objects_min.js",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "string interpolation",
+    "object interpolation",
+    "template",
+    "replace",
+    "parameterization"
+  ],
   "exports": {
     ".": {
       "import": "./dist/interpolation_objects_min.js",
@@ -21,34 +32,41 @@
     "type": "git",
     "url": "https://github.com/code4ward/jsoi.git"
   },
+  "homepage": "https://github.com/code4ward/jsoi",
   "scripts": {
-    "create_global_scope_module_loader": "node src/interpolation_file_template.js utils/module_load_template.txt.js dist/interpolation_objects_gs.js ModuleJSFileName=interpolation_objects.js",
-    "rename_target_interpolation_objects": "node utils/file_helper.js move dist/index.js dist/interpolation_objects.js",
+    "deploy_gh_pages": "gh-pages -d dist && node utils/create_tag_on_dist.js",
+    "pack_dist": "cd dist && npm pack",
+    "version_dist_package": "node utils/copy_pkg_version.js",
+    "cpy_dist_package": "node utils/file_helper.js copy build_assets/package_dist.json dist/package.json",
+    "push_tags": "git push && git push --tags",
+    "copy_html": "node utils/file_helper.js copy build_assets/jsoi_example_gs.html dist/jsoi_example_gs.html",
     "copy_icons": "node utils/file_helper.js copy icon.png dist/icon.png",
+    "copy_readme": "node utils/file_helper.js copy build_assets/README_DIST.md dist/README.md",
     "copy_license": "node utils/file_helper.js copy license.md dist/license.md",
-    "copy_readme": "node utils/file_helper.js copy BUILD_README.md dist/README.md",
-    "copy_interpolation_file": "node utils/file_helper.js copy src/interpolation_file_template.js dist/interpolation_file_template.js",
-    "build_interpolation_objects": "ncc build src/interpolation_objects.js --out dist",
-    "prepare_interpolation_objects": "npm run build_interpolation_objects && npm run rename_target_interpolation_objects",
-    "prepare_non_min": "npm run create_global_scope_module_loader && npm run prepare_interpolation_objects && npm run copy_interpolation_file",
-    "create_global_scope_module_loader_min": "node src/interpolation_file_template.js utils/module_load_template.txt.js dist/interpolation_objects_gs_min.js ModuleJSFileName=interpolation_objects_min.js",
-    "prepare_global_scope_loader_min": "npm run create_global_scope_module_loader_min",
-    "rename_target_interpolation_objects_min": "node utils/file_helper.js move dist/index.js dist/interpolation_objects_min.js",
-    "minify_interpolation_objects": "ncc build src/interpolation_objects.js --out dist --minify",
-    "prepare_interpolation_objects_min": "npm run minify_interpolation_objects && npm run rename_target_interpolation_objects_min",
-    "prepare_min": "npm run prepare_interpolation_objects_min && npm run prepare_global_scope_loader_min",
+    "copy_supporting_docs": "npm run copy_license && npm run copy_readme && npm run copy_icons && npm run copy_html",
+    "build_dist": "npx rollup --config",
+    "clean_dist": "node utils/file_helper.js cleanDist",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "lint": "eslint .",
-    "copy_supporting_docs": "npm run copy_license && npm run copy_readme && npm run copy_icons",
-    "build": "npm run lint && npm run test && npm run prepare_min && npm run prepare_non_min && npm run copy_supporting_docs",
-    "deploy": "npm run build && gh-pages -d dist",
+    "lint": "eslint ./src",
+    "deploy_all": "npm run push_tags && npm run cpy_dist_package && npm run version_dist_package && npm run pack_dist && npm run deploy_gh_pages",
+    "build": "npm run lint && npm run test && npm run clean_dist && npm run build_dist && npm run copy_supporting_docs",
+    "deploy:patch": "npm run build && npm version patch && npm run deploy_all",
+    "deploy:minor": "npm run build && npm version minor && npm run deploy_all",
+    "deploy:major": "npm run build && npm version major && npm run deploy_all",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.0",
+    "@eslint/js": "^9.22.0",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
     "@vercel/ncc": "^0.38.1",
     "eslint": "^9.22.0",
     "gh-pages": "^6.3.0",
-    "jest": "^29.5.0"
+    "globals": "^16.0.0",
+    "jest": "^29.5.0",
+    "rollup": "^4.36.0"
   },
   "jest": {
     "verbose": false

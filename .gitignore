@@ -1,30 +1,6 @@
-syntax: glob
-*~
-*.orig
-*.rej
-
-
 # NodeJS
-node_modules/
-
-#apk
-*.apk
-
-
-
-# Test files
-*.pyc
-.vagrant
-.docker
-.govmomi
-*.exec
-
-# Docs
-.allmark
-
-*.db
-.metadata/*
-node_modules/*
-
-.idea
+node_modules
 dist
+.idea
+
+*.tgz
