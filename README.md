@@ -24,6 +24,8 @@ global scope (browser-side). Below are examples for importing and simple use.
       * [Installation npm](#installation-npm)
       * [Installation npm latest build](#installation-npm-latest-build)
       * [Installation download](#installation-download)
+    * [Script tag unpkg](#script-tag-unpkg)
+    * [Script tag GIT hosting](#script-tag-git-hosting)
     * [For Module Import](#for-module-import)
       * [Minimized](#minimized)
       * [Non-Minimized](#non-minimized)
@@ -51,6 +53,15 @@ global scope (browser-side). Below are examples for importing and simple use.
 
 #### Installation download
 [latest tarball](https://code4ward.github.io/JSOI/jsoi-latest.tgz)
+
+### Script tag unpkg
+```html
+<script src="https://unpkg.com/jsoi@latest"></script>
+```
+### Script tag GIT hosting
+```html
+<script src="https://code4ward.github.io/JSOI/interpolation_objects.gs.js"></script>
+```
 
 ### For Module Import
 For ES Module usage, include one of the following files in your project, depending on your preference for minimized or non-minimized builds. These are ideal for modern environments that support `import/export`.
