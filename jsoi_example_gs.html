@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Scope Example</title>
+</head>
+<body>
+  <h1>JSOI Global Scope Example</h1>
+  <script src="https://code4ward.github.io/JSOI/interpolation_objects.gs.js"></script>
+
+  <script>
+    (async () => {
+        const obj = {
+            A: "{{ ->ƒ( '({{One}} == {{One}}) ? (2 * 5.{{One}}) : (4 / 3)' ) }}",
+            B: "{{ ->ƒ( '10.5 + -2 - 4' ) }}",
+            C: "{{ ->ƒ( '({{One}} / 4) * 4' ) }}",
+            D: "{{ ->ƒ( '(({{One}} / 4) * 4) == 4' ) }}",
+        };
+
+        // Use the global `ObjectInterpolator` from the included script
+        const oi = new JSOI.ObjectInterpolator(obj, {
+            One: 1
+        }, {});
+        await oi.interpolate();
+        console.log(obj);
+    })();
+  </script>
+</body>
+</html>
