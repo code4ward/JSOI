@@ -26,7 +26,7 @@
   "scripts": {
     "deploy_gh_pages": "gh-pages -d dist && node utils/create_tag_on_dist.js",
     "rename_pkg_to_latest": "node utils/file_helper.js RenamePkgToLatest",
-    "pack_dist": "cd dist && npm pack && rename_pkg_to_latest",
+    "pack_dist": "cd dist && npm pack && npm run rename_pkg_to_latest",
     "version_dist_package": "node utils/copy_pkg_version.js",
     "cpy_dist_package": "node utils/file_helper.js copy build_assets/package_dist.json dist/package.json",
     "push_tags": "git push && git push --tags",
