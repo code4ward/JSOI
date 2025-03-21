@@ -14,16 +14,7 @@
     "replace",
     "parameterization"
   ],
-  "exports": {
-    ".": {
-      "import": "./dist/interpolation_objects_min.js",
-      "default": "./dist/interpolation_objects_min.js"
-    },
-    "./dev": {
-      "import": "./dist/interpolation_objects.js",
-      "default": "./dist/interpolation_objects.js"
-    }
-  },
+
   "bin": {
     "jsoi-cli": "./dist/interpolation_file_template.js"
   },
@@ -35,7 +26,8 @@
   "homepage": "https://github.com/code4ward/jsoi",
   "scripts": {
     "deploy_gh_pages": "gh-pages -d dist && node utils/create_tag_on_dist.js",
-    "pack_dist": "cd dist && npm pack",
+    "rename_pkg_to_latest":"node utils/file_helper.js RenamePkgToLatest",
+    "pack_dist": "cd dist && npm pack && rename_pkg_to_latest",
     "version_dist_package": "node utils/copy_pkg_version.js",
     "cpy_dist_package": "node utils/file_helper.js copy build_assets/package_dist.json dist/package.json",
     "push_tags": "git push && git push --tags",

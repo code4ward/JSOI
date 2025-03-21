@@ -37,6 +37,9 @@ function copyFile(oldFilePath, newFilePath) {
             console.log(`Copied ${oldFilePath} to ${newFilePath}`);
     });
 }
+// --------------------------------------------------------------------------------------------------------------------
+//
+// --------------------------------------------------------------------------------------------------------------------
 function cleanDistFolder(distPath) {
 
     if (existsSync(distPath)) {
@@ -50,43 +53,62 @@ function cleanDistFolder(distPath) {
     else
         fail('dist folder does not exist');
 }
+// --------------------------------------------------------------------------------------------------------------------
+//
+// --------------------------------------------------------------------------------------------------------------------
+async function getCurrentPackageVersion(folder) {
+    const distPackageJsonPath = join("./", folder, 'package.json');
+    const distPackageStr = await readFile(distPackageJsonPath, 'utf8')
+    const distPackageJson = JSON.parse(distPackageStr);
+
+    return distPackageJson.version;
+}
 
 // --------------------------------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------------------------------
-
-try {
-    const cmd = process.argv[2].trim().toLowerCase();
-    if ((cmd === "movepkg") && (process.argv.length === 3)) {
-        const distPackageJsonPath = join("./", 'dist', 'package.json');
-        const distPackageStr = readFile(distPackageJsonPath, 'utf8')
-        const distPackageJson = JSON.parse(distPackageStr);
-
-        const version = distPackageJson.version;
-        if (version) {
-            const packageName = `jsoi-${version}.tgz`;
-            const newFilePath = join("./", 'dist', packageName);
-            moveFile(packageName, newFilePath);
+async function main()
+{
+    try {
+        const cmd = process.argv[2].trim().toLowerCase();
+        if ((cmd === "renamepkgtolatest") && (process.argv.length === 3)) {
+            const version = await getCurrentPackageVersion('dist');
+            if (version) {
+                const packageName = `jsoi-${version}.tgz`;
+                const newPackageName = `jsoi-latest.tgz`;
+                const oldFilePath = join("./", 'dist', packageName);
+                const newFilePath = join("./", 'dist', newPackageName);
+                moveFile(oldFilePath, newFilePath);
+            } else
+                fail('Cannot find version of built pack');
+        }
+        else if ((cmd === "movepkg") && (process.argv.length === 3)) {
+            const version = await getCurrentPackageVersion('dist');
+            if (version) {
+                const packageName = `jsoi-${version}.tgz`;
+                const newFilePath = join("./", 'dist', packageName);
+                moveFile(packageName, newFilePath);
+            } else
+                fail('Cannot find version of built pack');
+        }
+        if ((cmd === "cleandist") && (process.argv.length === 3)) {
+            const distPackageJsonPath = join("./", 'dist');
+            cleanDistFolder(distPackageJsonPath)
+        } else if ((cmd === "move") && (process.argv.length === 5)) {
+            const oldFilePath = process.argv[3];
+            const newFilePath = process.argv[4];
+            moveFile(oldFilePath, newFilePath);
+        } else if ((cmd === "copy") && (process.argv.length === 5)) {
+            const oldFilePath = process.argv[3];
+            const newFilePath = process.argv[4];
+            copyFile(oldFilePath, newFilePath);
         } else
-            fail('Cannot find version of built pack');
+            fail(`Usage: ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} <move | copy> [sourcePath/filename] [targetPath/filename] | ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} MovePkg`)
+
+        console.log(`${cmd} complete!`);
+    } catch (err) {
+        fail(err.message);
     }
-    if ((cmd === "cleandist") && (process.argv.length === 3)) {
-        const distPackageJsonPath = join("./", 'dist');
-        cleanDistFolder(distPackageJsonPath)
-    } else if ((cmd === "move") && (process.argv.length === 5)) {
-        const oldFilePath = process.argv[3];
-        const newFilePath = process.argv[4];
-        moveFile(oldFilePath, newFilePath);
-    } else if ((cmd === "copy") && (process.argv.length === 5)) {
-        const oldFilePath = process.argv[3];
-        const newFilePath = process.argv[4];
-        copyFile(oldFilePath, newFilePath);
-    } else
-        fail(`Usage: ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} <move | copy> [sourcePath/filename] [targetPath/filename] | ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} MovePkg`)
-
-    console.log(`${cmd} complete!`);
-}
-catch (err) {
-    fail(err.message);
 }
 
+main();

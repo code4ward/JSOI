@@ -20,7 +20,10 @@ global scope (browser-side). Below are examples for importing and simple use.
 * [JSOI distribution](#jsoi-distribution)
   * [REPO](#repo)
   * [JSOI Distribution](#jsoi-distribution-1)
-    * [Add to package.json file](#add-to-packagejson-file)
+    * [Installation](#installation)
+      * [Installation npm](#installation-npm)
+      * [Installation npm latest build](#installation-npm-latest-build)
+      * [Installation download](#installation-download)
     * [For Module Import](#for-module-import)
       * [Minimized](#minimized)
       * [Non-Minimized](#non-minimized)
@@ -35,15 +38,19 @@ global scope (browser-side). Below are examples for importing and simple use.
         * [Using as require in node](#using-as-require-in-node-1)
 <!-- TOC -->
 
-### Add to package.json file
-```json
-{
-  "dependencies": {
-    "jsoi": "github:code4ward/jsoi"
-  }
-}
+### Installation
+#### Installation npm
+```shell
+  npm update jsoi
 ```
 
+#### Installation npm latest build
+```shell
+  npm install https://code4ward.github.io/JSOI/jsoi-latest.tgz
+```
+
+#### Installation download
+[latest tarball](https://code4ward.github.io/JSOI/jsoi-latest.tgz)
 
 ### For Module Import
 For ES Module usage, include one of the following files in your project, depending on your preference for minimized or non-minimized builds. These are ideal for modern environments that support `import/export`.
