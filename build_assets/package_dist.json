@@ -10,11 +10,13 @@
       "require": "./interpolation_objects.cjs",
       "default": "./interpolation_objects.mjs"
     },
-    "./template": {
-      "import": "./interpolation_file_template.mjs",
-      "require": "./interpolation_file_template.cjs"
+    "./min": {
+      "import": "./interpolation_objects.min.mjs",
+      "require": "./interpolation_objects.min.cjs"
     }
   },
+  "browser": "./interpolation_objects.min.mjs",
+
   "unpkg": "interpolation_objects.gs.min.js",
   "files": [
     "*.js",
