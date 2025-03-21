@@ -9,20 +9,7 @@ import {
     QueryObjKeyValueContextI,
     ObjectInterpolatorBase
 } from "../src/interpolation_objects.js";
-function test() {
-    const abv = "Abc";
-    const fetchData = {
-                PResponses: [],
-                Indexes: [],
-                Remove: [],
-                DataProcessor: async function () {
-                    console.log(this.PResponses);
-                    console.log(this.Indexes);
-                    console.log(abv);
-                }
-            };
-    fetchData.DataProcessor();
-}
+
 describe('Test template Var', () => {
     it("Contains template Var", async () => {
         const testString = "{{ABC}}";
@@ -43,7 +30,6 @@ describe('Test template Var', () => {
 });
 
 describe('Simple Interpolation tests', () => {
-    test();
     it("Basic Types Interpolation Test", async () => {
         const obj = {
             One: "{{One}}",
