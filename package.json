@@ -1,6 +1,6 @@
 {
   "name": "jsoi",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "A minimalistic, zero dependency javascript library that can perform string interpolation recursively over javascript objects preserving types. Great for dynamic configuration loading, supports asynchronous loading of objects with user-defined callbacks in NodeJS or in a browser.",
   "main": "./interpolation_objects.cjs",
   "module": "./interpolation_objects.mjs",
@@ -30,7 +30,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/code4ward/jsoi.git"
+    "url": "git+https://github.com/code4ward/jsoi.git"
   },
   "keywords": [
     "string interpolation",
