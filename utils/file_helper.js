@@ -91,7 +91,7 @@ async function main()
             } else
                 fail('Cannot find version of built pack');
         }
-        if ((cmd === "cleandist") && (process.argv.length === 3)) {
+        else if ((cmd === "cleandist") && (process.argv.length === 3)) {
             const distPackageJsonPath = join("./", 'dist');
             cleanDistFolder(distPackageJsonPath)
         } else if ((cmd === "move") && (process.argv.length === 5)) {
