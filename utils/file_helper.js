@@ -74,7 +74,7 @@ async function main()
         if ((cmd === "renamepkgtolatest") && (process.argv.length === 3)) {
             const version = await getCurrentPackageVersion('dist');
             if (version) {
-                const packageName = `jsoi-${version}.tgz`;
+                const packageName = `jsoi-lib-${version}.tgz`;
                 const newPackageName = `jsoi-latest.tgz`;
                 const oldFilePath = join("./", 'dist', packageName);
                 const newFilePath = join("./", 'dist', newPackageName);
