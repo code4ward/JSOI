@@ -26,7 +26,7 @@
   "scripts": {
     "deploy_gh_pages": "gh-pages -d dist && node utils/create_tag_on_dist.js",
     "rename_pkg_to_latest": "node utils/file_helper.js RenamePkgToLatest",
-    "pack_dist": "cd dist && npm pack && npm run rename_pkg_to_latest",
+    "pack_dist": "cd dist && npm pack",
     "version_dist_package": "node utils/copy_pkg_version.js",
     "cpy_dist_package": "node utils/file_helper.js copy build_assets/package_dist.json dist/package.json",
     "push_tags": "git push && git push --tags",
@@ -39,7 +39,7 @@
     "clean_dist": "node utils/file_helper.js cleanDist",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "lint": "eslint ./src",
-    "deploy_all": "npm run push_tags && npm run cpy_dist_package && npm run version_dist_package && npm run pack_dist && npm run deploy_gh_pages",
+    "deploy_all": "npm run push_tags && npm run cpy_dist_package && npm run version_dist_package && npm run pack_dist && npm run rename_pkg_to_latest && npm run deploy_gh_pages",
     "build": "npm run clean_dist && npm run lint && npm run test && npm run build_dist && npm run copy_supporting_docs",
     "deploy:patch": "npm run build && npm version patch && npm run deploy_all",
     "deploy:minor": "npm run build && npm version minor && npm run deploy_all",
