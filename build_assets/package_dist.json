@@ -1,5 +1,5 @@
 {
-  "name": "jsoi",
+  "name": "jsoi-lib",
   "version": "1.0.2",
   "description": "A minimalistic, zero dependency javascript library that can perform string interpolation recursively over javascript objects preserving types. Great for dynamic configuration loading, supports asynchronous loading of objects with user-defined callbacks in NodeJS or in a browser.",
   "main": "./interpolation_objects.cjs",
@@ -7,10 +7,14 @@
   "exports": {
     ".": {
       "import": "./interpolation_objects.mjs",
+      "require": "./interpolation_objects.cjs"
+    },
+    "./josi": {
+      "import": "./interpolation_objects.mjs",
       "require": "./interpolation_objects.cjs",
       "default": "./interpolation_objects.mjs"
     },
-    "./min": {
+    "./josi/min": {
       "import": "./interpolation_objects.min.mjs",
       "require": "./interpolation_objects.min.cjs"
     }
