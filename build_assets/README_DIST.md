@@ -43,7 +43,7 @@ global scope (browser-side). Below are examples for importing and simple use.
 ### Installation
 #### Installation npm
 ```shell
-  npm update jsoi
+  npm update jsoi-lib
 ```
 
 #### Installation npm latest build
@@ -55,7 +55,9 @@ global scope (browser-side). Below are examples for importing and simple use.
 [latest tarball](https://code4ward.github.io/JSOI/jsoi-latest.tgz)
 
 ### Script tag unpkg
+**NOT CURRENTLY IMPLEMENTED**
 ```html
+
 <script src="https://unpkg.com/jsoi@latest"></script>
 ```
 ### Script tag GIT hosting
