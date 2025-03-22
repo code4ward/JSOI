@@ -3,9 +3,9 @@
 // copy or move a file or move a npm pack to dist folder
 //
 // --------------------------------------------------------------------------------------------------------------------
-import { rename, cp, existsSync, readdirSync, unlinkSync } from 'fs'
+import { rename, cp, existsSync, readdirSync, unlinkSync, mkdirSync, statSync } from 'fs'
 import * as path from "node:path";
-import {join} from "path";
+import {join, resolve, relative} from "path";
 import {readFile} from "fs/promises";
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -15,43 +15,91 @@ function fail(msg) {
     console.error(msg);
     process.exit(1);
 }
+
+// --------------------------------------------------------------------------------------------------------------------
+//
+// --------------------------------------------------------------------------------------------------------------------
+function isValidPath(filePath, validateFileExists) {
+    const currentDir = resolve('./'); // Resolve current directory
+    const resolvedPath = resolve(filePath); // Resolve input path to an absolute path
+    const relativePath = relative(currentDir, resolvedPath); // Get the relative path from currentDir to resolvedPath
+
+    // Check if the file exists and is a valid file
+    const pathExists = existsSync(resolvedPath);
+    const isFile = pathExists && statSync(resolvedPath).isFile();
+
+    // Ensure the resolved path is within currentDir scope
+    const isWithinCurrentDir = !relativePath.startsWith('..') && !relativePath.startsWith('/') && !path.isAbsolute(relativePath);
+
+    // Return true only if the file exists, is a file, and is within the current directory scope
+    return isWithinCurrentDir && (!validateFileExists || isFile);
+
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+//
+// --------------------------------------------------------------------------------------------------------------------
+function createFolderIfNotExists(folderPath) {
+    if (!existsSync(folderPath)) {
+        mkdirSync(folderPath, { recursive: true }); // Recursive for nested folder creation
+        console.log(`Folder created at: ${folderPath}`);
+    } else {
+        console.log(`Folder already exists: ${folderPath}`);
+    }
+}
+
 // --------------------------------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------------------------------
 function moveFile(oldFilePath, newFilePath) {
-    rename(oldFilePath, newFilePath, (err) => {
-        if (err)
-            fail(err.message);
-        else
-            console.log(`Renamed ${oldFilePath} to ${newFilePath}`);
-    });
+     if(isValidPath(oldFilePath, true)) {
+         if(isValidPath(newFilePath, false)) {
+             rename(oldFilePath, newFilePath, (err) => {
+                 if (err)
+                     fail(err.message);
+                 else
+                     console.log(`Renamed ${oldFilePath} to ${newFilePath}`);
+             });
+         }
+         else
+             fail(`Invalid path: ${newFilePath}. Please provide a valid path to a target file.`);
+     }
+     else
+         fail(`Invalid path: ${oldFilePath}. Please provide a valid path to a source file.`);
+
 }
 // --------------------------------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------------------------------
 function copyFile(oldFilePath, newFilePath) {
-    cp(oldFilePath, newFilePath, {}, (err) => {
-        if (err)
-            fail(err.message);
+
+    if (isValidPath(oldFilePath, true)) {
+        if (isValidPath(newFilePath, false)) {
+            cp(oldFilePath, newFilePath, {}, (err) => {
+                if (err)
+                    fail(err.message);
+                else
+                    console.log(`Copied ${oldFilePath} to ${newFilePath}`);
+            });
+        }
         else
-            console.log(`Copied ${oldFilePath} to ${newFilePath}`);
-    });
+            fail(`Invalid path: ${newFilePath}. Please provide a valid path to a target file.`);
+    }
+    else
+        fail(`Invalid path: ${oldFilePath}. Please provide a valid path to source file.`);
 }
 // --------------------------------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------------------------------
 function cleanDistFolder(distPath) {
 
-    if (existsSync(distPath)) {
-        const files = readdirSync(distPath);
-        files.forEach(file => {
-            const filePath = join(distPath, file);
+    createFolderIfNotExists(distPath)
+    const files = readdirSync(distPath);
+    files.forEach(file => {
+        const filePath = join(distPath, file);
 
-            unlinkSync(filePath);
-        });
-    }
-    else
-        fail('dist folder does not exist');
+        unlinkSync(filePath);
+    });
 }
 // --------------------------------------------------------------------------------------------------------------------
 //
@@ -95,13 +143,13 @@ async function main()
             const distPackageJsonPath = join("./", 'dist');
             cleanDistFolder(distPackageJsonPath)
         } else if ((cmd === "move") && (process.argv.length === 5)) {
-            const oldFilePath = process.argv[3];
-            const newFilePath = process.argv[4];
-            moveFile(oldFilePath, newFilePath);
+            const sourceFilePath = process.argv[3];
+            const targetFilePath = process.argv[4];
+            moveFile(sourceFilePath, targetFilePath);
         } else if ((cmd === "copy") && (process.argv.length === 5)) {
-            const oldFilePath = process.argv[3];
-            const newFilePath = process.argv[4];
-            copyFile(oldFilePath, newFilePath);
+            const sourceFilePath = process.argv[3];
+            const targetFilePath = process.argv[4];
+            copyFile(sourceFilePath, targetFilePath);
         } else
             fail(`Usage: ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} <move | copy> [sourcePath/filename] [targetPath/filename] | ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} MovePkg`)
 

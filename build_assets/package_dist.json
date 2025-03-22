@@ -28,9 +28,7 @@
     "*.md",
     "icon.png"
   ],
-  "bin": {
-    "jsoi-cli": "./interpolation_file_template.cjs.js"
-  },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/code4ward/jsoi.git"
