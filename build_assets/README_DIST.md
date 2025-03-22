@@ -1,5 +1,5 @@
-# JSOI distribution
-This branch holds JOSI distribution files and can be found online at: [https://code4ward.github.io/JSOI/](https://code4ward.github.io/JSOI/).  JSOI is designed specifically for templating javascript objects. 
+# [jsoi-lib](https://code4ward.github.io/JSOI/) 
+Here you can find the distribution (build) files for jsoi.  JSOI is designed specifically for templating javascript objects.  
 It is designed to aid in building dynamic and conditional configuration objects while preserving types in output 
 if possible.
 
@@ -7,9 +7,10 @@ if possible.
 The JSOI repo can be found here:  [JSOI Repo](https://github.com/code4ward/jsoi); along with documentation and example use cases.
 
 ## JSOI Distribution
-There are multiple ways to get JSOI. You can either grab the prebuilt files or install it via npm. Prebuilt distribution files come 
-in both minimized (`*.min.js`) and non-minimized (`*.js`) versions, with support for ES Modules, CommonJS (Node.js), and 
-global scope (browser-side). Below are examples for importing and simple use.
+There are multiple ways to get JSOI build files. You can either grab the prebuilt files or install it via npm. 
+Prebuilt distribution files come in both minimized (`*.min.js`) and non-minimized (`*.js`) versions, with support for 
+ES Modules, CommonJS (Node.js), and global scope (browser-side). Below are examples for importing and simple use.  However,
+see the main repo for full documentation [JSOI Repo](https://github.com/code4ward/jsoi)
 
 
 <picture>
@@ -17,9 +18,9 @@ global scope (browser-side). Below are examples for importing and simple use.
 </picture>
 
 <!-- TOC -->
-* [JSOI distribution](#jsoi-distribution)
+* [jsoi-lib](#jsoi-lib-)
   * [REPO](#repo)
-  * [JSOI Distribution](#jsoi-distribution-1)
+  * [JSOI Distribution](#jsoi-distribution)
     * [Installation](#installation)
       * [Installation npm](#installation-npm)
       * [Installation npm latest build](#installation-npm-latest-build)
@@ -48,11 +49,11 @@ global scope (browser-side). Below are examples for importing and simple use.
 
 #### Installation npm latest build
 ```shell
-  npm install https://code4ward.github.io/JSOI/jsoi-latest.tgz
+  npm install https://code4ward.github.io/JSOI/jsoi-lib-latest.tgz
 ```
 
 #### Installation download
-[latest tarball](https://code4ward.github.io/JSOI/jsoi-latest.tgz)
+[latest tarball](https://code4ward.github.io/JSOI/jsoi-lib-latest.tgz)
 
 ### Script tag unpkg
 **NOT CURRENTLY IMPLEMENTED**
@@ -66,7 +67,8 @@ global scope (browser-side). Below are examples for importing and simple use.
 ```
 
 ### For Module Import
-For ES Module usage, include one of the following files in your project, depending on your preference for minimized or non-minimized builds. These are ideal for modern environments that support `import/export`.
+For ES Module usage, include one of the following files in your project, depending on your preference for minimized or non-minimized builds. 
+These are ideal for modern environments that support `import/export`.
 
 #### Minimized
 * [interpolation_objects.min.mjs](./interpolation_objects.min.mjs)
@@ -80,7 +82,7 @@ For ES Module usage, include one of the following files in your project, dependi
 
 
 ```javascript
-import { ObjectInterpolator } from "jsoi";
+import { ObjectInterpolator } from "jsoi-lib";
 
 ( async () => {
 
@@ -118,7 +120,7 @@ For ES Module usage, include one of the following files in your project, dependi
 > Example below shows node import.
 
 ```javascript
-const { ObjectInterpolator } = require("jsoi");
+const { ObjectInterpolator } = require("jsoi-lib");
 
 (async () => {
     const obj = {
