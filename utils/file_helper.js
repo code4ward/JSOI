@@ -75,7 +75,7 @@ async function main()
             const version = await getCurrentPackageVersion('dist');
             if (version) {
                 const packageName = `jsoi-lib-${version}.tgz`;
-                const newPackageName = `jsoi-latest.tgz`;
+                const newPackageName = `jsoi-lib-latest.tgz`;
                 const oldFilePath = join("./", 'dist', packageName);
                 const newFilePath = join("./", 'dist', newPackageName);
                 moveFile(oldFilePath, newFilePath);
