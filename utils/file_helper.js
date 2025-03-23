@@ -3,7 +3,7 @@
 // copy or move a file or move a npm pack to dist folder
 //
 // --------------------------------------------------------------------------------------------------------------------
-import { rename, cp, existsSync, readdirSync, unlinkSync } from 'fs'
+import { rename, cp, existsSync, readdirSync, unlinkSync, mkdirSync } from 'fs'
 import * as path from "node:path";
 import {join} from "path";
 import {readFile} from "fs/promises";
@@ -15,6 +15,18 @@ function fail(msg) {
     console.error(msg);
     process.exit(1);
 }
+// --------------------------------------------------------------------------------------------------------------------
+//
+// --------------------------------------------------------------------------------------------------------------------
+function createFolderIfNotExists(folderPath) {
+    if (!existsSync(folderPath)) {
+        mkdirSync(folderPath, { recursive: true }); // Recursive for nested folder creation
+        console.log(`Folder created at: ${folderPath}`);
+    } else {
+        console.log(`Folder already exists: ${folderPath}`);
+    }
+}
+
 // --------------------------------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------------------------------
@@ -42,16 +54,13 @@ function copyFile(oldFilePath, newFilePath) {
 // --------------------------------------------------------------------------------------------------------------------
 function cleanDistFolder(distPath) {
 
-    if (existsSync(distPath)) {
-        const files = readdirSync(distPath);
-        files.forEach(file => {
-            const filePath = join(distPath, file);
+    createFolderIfNotExists(distPath)
+    const files = readdirSync(distPath);
+    files.forEach(file => {
+        const filePath = join(distPath, file);
 
-            unlinkSync(filePath);
-        });
-    }
-    else
-        fail('dist folder does not exist');
+        unlinkSync(filePath);
+    });
 }
 // --------------------------------------------------------------------------------------------------------------------
 //
