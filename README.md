@@ -1,7 +1,7 @@
-# JS Objects Interpolation - JSOI
-[![npm version](https://img.shields.io/npm/v/jsoi-lib.svg)](https://www.npmjs.com/package/jsoi-lib)
+# JS Objects Interpolation - JSOI [![npm version](https://img.shields.io/npm/v/jsoi-lib.svg)](https://www.npmjs.com/package/jsoi-lib)
 ![CI](https://github.com/code4ward/JSOI/actions/workflows/CI.yaml/badge.svg)
 [![codecov](https://codecov.io/gh/code4ward/JSOI/graph/badge.svg?token=TP9TJN56EZ)](https://codecov.io/gh/code4ward/JSOI)
+
 
 <picture>
  <img alt="icon" src="icon.png" width="250">
