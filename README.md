@@ -1,6 +1,6 @@
 # JS Objects Interpolation - JSOI
-[![codecov](https://codecov.io/gh/code4ward/JSOI/graph/badge.svg?token=TP9TJN56EZ)](https://codecov.io/gh/code4ward/JSOI)
 ![CI](https://github.com/code4ward/JSOI/actions/workflows/CI.yaml/badge.svg)
+[![codecov](https://codecov.io/gh/code4ward/JSOI/graph/badge.svg?token=TP9TJN56EZ)](https://codecov.io/gh/code4ward/JSOI)
 
 <picture>
  <img alt="icon" src="icon.png" width="250">
