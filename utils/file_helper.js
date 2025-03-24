@@ -52,23 +52,41 @@ function createFolderIfNotExists(folderPath) {
 //
 // --------------------------------------------------------------------------------------------------------------------
 function moveFile(oldFilePath, newFilePath) {
-    rename(oldFilePath, newFilePath, (err) => {
-        if (err)
-            fail(err.message);
-        else
-            console.log(`Renamed ${oldFilePath} to ${newFilePath}`);
-    });
+     if(isValidPath(oldFilePath, true)) {
+         if(isValidPath(newFilePath, false)) {
+             rename(oldFilePath, newFilePath, (err) => {
+                 if (err)
+                     fail(err.message);
+                 else
+                     console.log(`Renamed ${oldFilePath} to ${newFilePath}`);
+             });
+         }
+         else
+             fail(`Invalid path: ${newFilePath}. Please provide a valid path to a target file.`);
+     }
+     else
+         fail(`Invalid path: ${oldFilePath}. Please provide a valid path to a source file.`);
+
 }
 // --------------------------------------------------------------------------------------------------------------------
 //
 // --------------------------------------------------------------------------------------------------------------------
 function copyFile(oldFilePath, newFilePath) {
-    cp(oldFilePath, newFilePath, {}, (err) => {
-        if (err)
-            fail(err.message);
+
+    if (isValidPath(oldFilePath, true)) {
+        if (isValidPath(newFilePath, false)) {
+            cp(oldFilePath, newFilePath, {}, (err) => {
+                if (err)
+                    fail(err.message);
+                else
+                    console.log(`Copied ${oldFilePath} to ${newFilePath}`);
+            });
+        }
         else
-            console.log(`Copied ${oldFilePath} to ${newFilePath}`);
-    });
+            fail(`Invalid path: ${newFilePath}. Please provide a valid path to a target file.`);
+    }
+    else
+        fail(`Invalid path: ${oldFilePath}. Please provide a valid path to source file.`);
 }
 // --------------------------------------------------------------------------------------------------------------------
 //
@@ -126,28 +144,12 @@ async function main()
             cleanDistFolder(distPackageJsonPath)
         } else if ((cmd === "move") && (process.argv.length === 5)) {
             const sourceFilePath = process.argv[3];
-             if(isValidPath(sourceFilePath, true)) {
-                 const targetFilePath = process.argv[4];
-                 if(isValidPath(targetFilePath, false))
-                    moveFile(sourceFilePath, targetFilePath);
-                 else
-                     fail(`Invalid path: ${targetFilePath}. Please provide a valid path to a target file.`);
-             }
-             else
-                 fail(`Invalid path: ${sourceFilePath}. Please provide a valid path to a source file.`);
-
+            const targetFilePath = process.argv[4];
+            moveFile(sourceFilePath, targetFilePath);
         } else if ((cmd === "copy") && (process.argv.length === 5)) {
             const sourceFilePath = process.argv[3];
-            if(isValidPath(sourceFilePath, true)) {
-                const targetFilePath = process.argv[4];
-                if(isValidPath(targetFilePath, false))
-                    copyFile(sourceFilePath, targetFilePath);
-                else
-                    fail(`Invalid path: ${targetFilePath}. Please provide a valid path to a target file.`);
-            }
-            else
-                fail(`Invalid path: ${sourceFilePath}. Please provide a valid path to source file.`);
-
+            const targetFilePath = process.argv[4];
+            copyFile(sourceFilePath, targetFilePath);
         } else
             fail(`Usage: ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} <move | copy> [sourcePath/filename] [targetPath/filename] | ${path.basename(process.argv[0])} ${path.basename(process.argv[1])} MovePkg`)
 
