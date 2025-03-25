@@ -5,9 +5,6 @@
 ![ESLint](https://img.shields.io/badge/code%20style-eslint-brightgreen)
 ![Open Issues](https://img.shields.io/github/issues/code4ward/JSOI)
 
-
-
-
 <picture>
  <img alt="icon" src="icon.png" width="250">
 </picture>
