@@ -1,3 +1,5 @@
+# This workflow is triggered when a tag is added to the gh-pages branch signaling a new release is published.
+# From this condition we should trigger code coverage run and build and publish to NPM.
 name: publish-on-tag-in-gh-pages
 
 on:
