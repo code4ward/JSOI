@@ -1,6 +1,6 @@
 {
   "name": "jsoi",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "A minimalistic, zero dependency javascript library that can perform string interpolation recursively over javascript objects preserving types. Great for dynamic configuration loading, supports asynchronous loading of objects with user defined callbacks in NodeJS or in a browser.",
   "author": "Kevin McGraw",
   "main": "dist/interpolation_objects_min.js",
