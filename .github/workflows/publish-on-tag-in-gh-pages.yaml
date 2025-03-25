@@ -4,9 +4,10 @@ name: publish-on-tag-in-gh-pages
 
 on:
   push:
+    branches:
+      - gh-pages       # Trigger on pushes to the 'gh-pages' branch
     tags:
       - 'v*-dist' # Matches tags like v1.0.0-dist, v2.0.0-dist, etc.
-
 jobs:
   publish:
     runs-on: ubuntu-latest
