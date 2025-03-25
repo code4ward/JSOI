@@ -1,9 +1,10 @@
 # JS Objects Interpolation - JSOI [![npm version](https://img.shields.io/npm/v/jsoi-lib.svg)](https://www.npmjs.com/package/jsoi-lib)
-![CI](https://github.com/code4ward/JSOI/actions/workflows/publish-on-tag-in-gh-pages.yaml/badge.svg)
+![CI](https://github.com/code4ward/JSOI/actions/workflows/CI.yaml/badge.svg)
 [![codecov](https://codecov.io/gh/code4ward/JSOI/graph/badge.svg?token=TP9TJN56EZ)](https://codecov.io/gh/code4ward/JSOI)
 [![Known Vulnerabilities](https://snyk.io/test/github/code4ward/JSOI/badge.svg)](https://snyk.io/test/github/code4ward/JSOI)
 ![ESLint](https://img.shields.io/badge/code%20style-eslint-brightgreen)
 ![Open Issues](https://img.shields.io/github/issues/code4ward/JSOI)
+
 
 <picture>
  <img alt="icon" src="icon.png" width="250">
