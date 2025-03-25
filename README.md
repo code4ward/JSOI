@@ -56,10 +56,10 @@ see the main repo for full documentation [JSOI Repo](https://github.com/code4war
 [latest tarball](https://code4ward.github.io/JSOI/jsoi-lib-latest.tgz)
 
 ### Script tag unpkg
-**NOT CURRENTLY IMPLEMENTED**
+
 ```html
 
-<script src="https://unpkg.com/jsoi@latest"></script>
+<script src="https://unpkg.com/jsoi-lib@latest/interpolation_objects.gs.min.js"></script>
 ```
 ### Script tag GIT hosting
 ```html
