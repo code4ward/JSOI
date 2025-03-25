@@ -1,4 +1,4 @@
-name: Publish to npm on Tag in gh-pages
+name: Publish on Tag in gh-pages
 
 on:
   push:
