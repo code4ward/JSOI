@@ -1,7 +1,9 @@
+# Trigger is
 name: CI
-
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Matches tags like v1.0.20, v2.3.100, etc.
 
 jobs:
   run-codecov:
@@ -32,3 +34,10 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: code4ward/JSOI
+
+      # Step 6: Publish to npm
+      - name: Publish to npm
+        working-directory: ./dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Use npm token from repository secrets
+        run: npm publish
