@@ -39,13 +39,13 @@ async function createVersionTag() {
             await execAsync(`git tag -a ${tagName} -m "Version ${version}"`);
             console.log(`Tag ${tagName} created.`);
 
-            // Push the tag and the changes
-            await execAsync(`git push origin ${distBranchName} --tags`);
-            console.log(`Tag ${tagName} pushed to remote.`);
-
             // Switch back to the master branch
             await execAsync(`git checkout ${mainBranchName}`);
             console.log(`Switched back to ${mainBranchName} branch.`);
+
+            // Push the tag and the changes
+            await execAsync(`git push origin ${distBranchName} --tags`);
+            console.log(`Tag ${tagName} pushed to remote.`);
 
             console.log('Version tag creation completed successfully.');
         }

@@ -7,7 +7,7 @@ import {
     SinglePassTagReplacer,
     SimpleTagParser,
     QueryObjKeyValueContextI,
-    ObjectInterpolatorBase
+    ObjectInterpolatorBase, InterpolationValueNotFoundError
 } from "../src/interpolation_objects.js";
 
 describe('Test template Var', () => {
@@ -1548,14 +1548,16 @@ describe('query dot notation', () => {
             RealValue: "{{Junk value}}",
             FindValue: "{{ Test¤Fun¤UseThisKey }}",
             FindFunObj: "{{ Test¤noValue }}",
-            NotFound: "{{ Test¤jnoValue }}"
+            NotFound: "{{ Test¤jnoValue }}",
+            ThisIsAString: "{{ Test¤Fun¤Value }}",
         }
         const oi = new ObjectInterpolator(obj,
             {
                 "Junk value": "abc",
                 Test: {
                     Fun: {
-                        UseThisKey: "This is the value"
+                        UseThisKey: "This is the value",
+                        Value: 1
                     },
                     noValue: null
                 }
@@ -1565,9 +1567,38 @@ describe('query dot notation', () => {
         await oi.interpolate();
         expect(obj).toMatchObject({
             FindValue: "This is the value",
-            FindFunObj: null
+            FindFunObj: null,
+            ThisIsAString: 1
         }
         );
+    });
+    it("Test value properties, based on a query string",  async () => {
+
+        const parseFContext = {
+          Echo: (sender, a) => a
+        };
+        const expr = "({{Test¤Fun¤Value}} == 1) && ({{Test¤Fun¤NoValue}} == 4)";
+        const obj = { Q: `{{->ƒ( '${expr}' ) }}` };
+        const oi = new ObjectInterpolator(obj,
+            {
+                "Junk value": "abc",
+                Test: {
+                    Fun: {
+                        UseThisKey: "This is the value",
+                        Value: 1,
+                        NoValue: 4
+                    },
+                    noValue: null
+                }
+            },
+            {}, {ActionOnNotFound: ReplaceObjectAction.ACTION_DELETE, KeyValueContextI: QueryObjKeyValueContextI, KeyValueContextSeparator: "¤" });
+
+        await oi.interpolate();
+        if(obj.Q)
+            expect(obj.Q).toBe(true);
+        else
+            expect(obj.Q).toBe(false);
+
     });
     it("Another Basic Test",  async () => {
 
@@ -1600,5 +1631,30 @@ describe('query dot notation', () => {
             "Message": "The property does not include a garage. ",
             "MarketingRatingValue": 0
         });
+    });
+    it("Not found",  async () => {
+
+        const parseFContext = {
+          Echo: (sender, a) => a
+        };
+        const obj = {
+            RealValue: "{{Junk value}}",
+            FindValue: "{{ Test¤Fun¤UseThisKey1 }}",
+            FindFunObj: "{{ Test¤noValue }}",
+            NotFound: "{{ Test¤jnoValue }}"
+        }
+        const oi = new ObjectInterpolator(obj,
+            {
+                "Junk value": "abc",
+                Test: {
+                    Fun: {
+                        UseThisKey: "This is the value"
+                    },
+                    noValue: null
+                }
+            },
+            {}, {ActionOnNotFound: ReplaceObjectAction.ACTION_THROW, KeyValueContextI: QueryObjKeyValueContextI, KeyValueContextSeparator: "¤" });
+
+        expect(async () => await oi.interpolate()).rejects.toThrow(InterpolationValueNotFoundError);
     });
 });
