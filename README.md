@@ -25,7 +25,7 @@ see the main repo for full documentation [JSOI Repo](https://github.com/code4war
       * [Installation npm](#installation-npm)
       * [Installation npm latest build](#installation-npm-latest-build)
       * [Installation download](#installation-download)
-    * [Script tag unpkg](#script-tag-unpkg)
+    * [Script tag unpkg.com](#script-tag-unpkgcom)
     * [Script tag GIT hosting](#script-tag-git-hosting)
     * [For Module Import](#for-module-import)
       * [Minimized](#minimized)
@@ -55,12 +55,12 @@ see the main repo for full documentation [JSOI Repo](https://github.com/code4war
 #### Installation download
 [latest tarball](https://code4ward.github.io/JSOI/jsoi-lib-latest.tgz)
 
-### Script tag unpkg
+### Script tag unpkg.com
 
 ```html
-
 <script src="https://unpkg.com/jsoi-lib@latest/interpolation_objects.gs.min.js"></script>
 ```
+
 ### Script tag GIT hosting
 ```html
 <script src="https://code4ward.github.io/JSOI/interpolation_objects.gs.js"></script>
