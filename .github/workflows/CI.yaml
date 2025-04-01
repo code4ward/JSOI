@@ -28,12 +28,18 @@ jobs:
       - name: Run build script
         run: npm run build
 
+      - name: List files in dist after build
+        run: ls -al ./dist
+
       # Step 5: Upload coverage to Codecov
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: code4ward/JSOI
+
+      - name: List files in dist after coverage
+        run: ls -al ./dist
 
       # Step 6: Publish to npm
       - name: Publish to npm
