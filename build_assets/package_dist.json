@@ -18,7 +18,7 @@
     }
   },
   "browser": "./interpolation_objects.min.mjs",
-  "unpkg": "interpolation_objects.gs.min.js",
+  "unpkg": "./interpolation_objects.gs.min.js",
   "files": [
     "*.js",
     "*.mjs",
