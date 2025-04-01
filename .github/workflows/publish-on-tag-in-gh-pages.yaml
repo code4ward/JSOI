@@ -5,7 +5,7 @@ name: publish-on-tag-in-gh-pages
 on:
   push:
     tags:
-      - 'v*-dist'
+      - '*'
 jobs:
   publish:
     runs-on: ubuntu-latest
