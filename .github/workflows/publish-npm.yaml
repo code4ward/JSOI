@@ -55,4 +55,5 @@ jobs:
         working-directory: ./dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Use npm token from repository secrets
-        run: npm publish --dry-run
+        run: npm publish
+  
