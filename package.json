@@ -36,7 +36,7 @@
     "clean_dist": "node utils/file_helper.js cleanDist",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "lint": "eslint ./src",
-    "deploy_all": "npm run push_tags && npm run pack_dist && npm run rename_pkg_to_latest && npm run deploy_gh_pages",
+    "deploy_all": "npm run push_tags && npm run cpy_dist_package && npm run version_dist_package && npm run pack_dist && npm run rename_pkg_to_latest && npm run deploy_gh_pages",
     "build": "npm run clean_dist && npm run lint && npm run test && npm run build_dist && npm run cpy_dist_package && npm run version_dist_package && npm run copy_supporting_docs",
     "deploy:patch": "npm run build && npm version patch && npm run deploy_all",
     "deploy:minor": "npm run build && npm version minor && npm run deploy_all",
