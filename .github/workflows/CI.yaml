@@ -7,37 +7,69 @@ on:
   workflow_dispatch: # Allows manual triggering in GitHub
 
 jobs:
-  run-codecov:
+  test-build-version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.output_version.outputs.version }}
 
     steps:
-      # Step 1: Check out the current codebase
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Assign the version we are building
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            VERSION="v1.0.24"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION is set to $VERSION"
 
-      # Step 2: Set up Node.js
+      - name: Output the version for use between jobs
+        id: output_version
+        run: |
+          echo "version=${{ env.VERSION }}" >> $GITHUB_OUTPUT
+          echo "Outputting version: ${{ env.VERSION }}"
+
+      - name: Checkout the tagged version
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.VERSION }}
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Run the build script (includes coverage generation)
       - name: Run build script
         run: npm run build
 
       - name: List files in dist after build
         run: ls -al ./dist
 
-      # Step 5: Upload coverage to Codecov
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: code4ward/JSOI
 
-      - name: List files in dist after coverage
-        run: ls -al ./dist
+  trigger-npm-publish:
+      runs-on: ubuntu-latest
+      needs: test-build-version # Ensures it's dependent and conditional on success
+      steps:
+        - name: Trigger workflow via repository dispatch
+          uses: actions/github-script@v7
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }} # your default GITHUB_TOKEN should work if workflow is in the same repo; custom PAT if triggering cross-repo
+            script: |
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'publish-npm.yaml',  // The file name of target workflow file
+                ref: 'master', // Branch where the triggered workflow is defined
+                inputs: {
+                  version: "${{ needs.test-build-version.outputs.version }}"
+                }
+              });
+
