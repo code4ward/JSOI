@@ -10,6 +10,9 @@ jobs:
   process-release:
     runs-on: ubuntu-latest
 
+    env:
+      NPM_REGISTRY_URL: registry.npmjs.org
+
     steps:
       - name: Extract version from the release tag
         run: |
@@ -51,9 +54,9 @@ jobs:
             echo "✅ Versions match explicitly: Git tag version and package.json version both are (${{ env.VERSION }})"
           fi
 
-      - name: Publish to npm
+      - name: Publish npm package
         working-directory: ./dist
+        run: npm publish --//${{ env.NPM_REGISTRY_URL }}/:_authToken=${NODE_AUTH_TOKEN}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Use npm token from repository secrets
-        run: npm publish
-  
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
