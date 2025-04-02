@@ -1,0 +1,39 @@
+on:
+  release:
+    types:
+      - published # Trigger only when a release is published
+
+jobs:
+  process-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract version from the release tag
+        run: |
+          VERSION=${{ github.event.release.tag_name }}
+          echo "The version from the tag is: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Checkout code for the release tag
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.VERSION }}
+
+      - name: Show extracted version
+        run: |
+          echo "Using version: $VERSION"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the build script
+        run: npm run build
+
+      - name: List files after build
+        run: ls -al ./dist
+
+      - name: Publish to npm
+        working-directory: ./dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Use npm token from repository secrets
+        run: npm publish
