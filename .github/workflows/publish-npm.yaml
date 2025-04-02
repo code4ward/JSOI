@@ -31,6 +31,26 @@ jobs:
       - name: List files after build
         run: ls -al ./dist
 
+      - name: Extract version from package.json in dist folder
+        id: package_version
+        run: |
+          VERSION=$(node -p "require('./dist/package.json').version")
+          echo "Version from package.json: $VERSION"
+
+          # Save to environment variable explicitly accessible by later steps
+          echo "PACKAGE_VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Compare Git tag version to package.json version explicitly
+        run: |
+          echo "env.VERSION = ${{ env.VERSION }}"
+          echo "env.PACKAGE_VERSION = ${{ env.PACKAGE_VERSION }}"
+          if [ "${{ env.VERSION }}" != "v${{ env.PACKAGE_VERSION }}" ]; then
+            echo "❌ Versions mismatch: Git tag version (${{ env.VERSION }}) and package.json version (v${{ env.PACKAGE_VERSION }}) explicitly differ! Stopping."
+            exit 1
+          else
+            echo "✅ Versions match explicitly: Git tag version and package.json version both are (${{ env.VERSION }})"
+          fi
+
 #      - name: Publish to npm
 #        working-directory: ./dist
 #        env:
