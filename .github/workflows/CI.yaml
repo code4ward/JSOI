@@ -41,10 +41,3 @@ jobs:
 
       - name: List files in dist after coverage
         run: ls -al ./dist
-
-      # Step 6: Publish to npm
-      - name: Publish to npm
-        working-directory: ./dist
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Use npm token from repository secrets
-        run: npm publish
