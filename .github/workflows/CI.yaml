@@ -1,4 +1,4 @@
-# Trigger is
+# Trigger is set to target new version tags on the main branch
 name: CI
 on:
   push:
