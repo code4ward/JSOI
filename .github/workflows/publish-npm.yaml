@@ -51,8 +51,8 @@ jobs:
             echo "✅ Versions match explicitly: Git tag version and package.json version both are (${{ env.VERSION }})"
           fi
 
-#      - name: Publish to npm
-#        working-directory: ./dist
-#        env:
-#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Use npm token from repository secrets
-#        run: npm publish
+      - name: Publish to npm
+        working-directory: ./dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Use npm token from repository secrets
+        run: npm publish --dry-run
