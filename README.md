@@ -183,39 +183,39 @@ To interpolate over a simple string you can create an instance of ```StringInter
 The return valued is a new string.
 
 ### Feature matrix
-| Feature                                           | Supported |                      Reference                       |
-|---------------------------------------------------|:---------:|:----------------------------------------------------:|
-| **Simple Strings**                                |           |                                                      |
-| Simple string interpolation                       |    ✔️     |          [1](#Simple-string-interpolation)           |
-|                                                   |           |                                                      |
-| **Type conversions:**                             |           |                [2](#Type-Conversions)                |
-| Primitive type conversion                         |    ✔️     |                [3](#Primitive-types)                 |
-| Object type conversion                            |    ✔️     |          [4](#Nested-object-interpolation)           |
-| Array type conversion                             |    ✔️     |          [5](#Nested-object-interpolation)           |
-| Automatic type conversion                         |    🔻     |           [6](#Automatic-type-conversion)            |
-|                                                   |           |                                                      |
-| **Core**                                          |           |                                                      |
-| Nested object interpolation                       |    ✔️     |          [7](#Nested-object-interpolation)           |
-| Replacement with simple function calls            |    ✔️     |     [8](#Replacement-with-simple-function-calls)     |
-| Replacement on async function calls               |    ✔️     |     [9](#Replacement-with-async-function-calls)      |
-| Nested function calls                             |    ✔️     |             [10](#Nested-function-calls)             |
-| Dynamic variable construction                     |    ✔️     |         [11](#Dynamic-variable-construction)         |
-| Local variable override                           |    ✔️     |            [12](#local-variable-override)            |
-| Object keys may be used as replacement values     |    ✔️     | [13](#Object-keys-may-be-used-as-replacement-values) |
-| Declare keys to process and processing order      |    ✔️     | [14](#Declare-keys-to-process-and-processing-order)  |
-| Automatically merge and collapse nested arrays    |    ✔️     | [15](#Declare-keys-to-process-and-processing-order)  |
-|                                                   |           |                                                      |
-| **Conditional loading:**                          |           |              [16](#Conditional-loading)              |
-| Conditional loading object - load if true         |    ✔️     |       [17](#Conditional-loading-load-if-true)        |
-| Conditional loading object - do not load if false |    ✔️     |   [18](#Conditional-loading-do-not-load-if-false)    |
-| Conditional loading using arrays                  |    ✔️     |       [19](#Conditional-loading-using-arrays)        |
-| Conditional loading object - load if true         |    ✔️     |       [20](#Conditional-loading-load-if-true)        |
-|                                                   |           |                                                      |
-| **Special Handling:**                             |           |                                                      |
-| Expression parsing                                |    ✔️     |              [21](#Expression-parsing)               |
-| Interpolation on function content                 |    🔻     |       [22](#Interpolation-on-function-content)       |
-| Value not found                                   |    ✔️     |                [23](#Value-not-found)                |
-| Using template key as a query string              |    ✔️     |                                                      |
+| Feature                                           | Supported |                         Reference                          |
+|---------------------------------------------------|:---------:|:----------------------------------------------------------:|
+| **Simple Strings**                                |           |                                                            |
+| Simple string interpolation                       |    ✔️     |             [1](#Simple-string-interpolation)              |
+|                                                   |           |                                                            |
+| **Type conversions:**                             |           |                   [2](#Type-Conversions)                   |
+| Primitive type conversion                         |    ✔️     |                   [3](#Primitive-types)                    |
+| Object type conversion                            |    ✔️     |             [4](#Nested-object-interpolation)              |
+| Array type conversion                             |    ✔️     |             [5](#Nested-object-interpolation)              |
+| Automatic type conversion                         |    🔻     |              [6](#Automatic-type-conversion)               |
+|                                                   |           |                                                            |
+| **Core**                                          |           |                                                            |
+| Nested object interpolation                       |    ✔️     |             [7](#Nested-object-interpolation)              |
+| Replacement with simple function calls            |    ✔️     |        [8](#Replacement-with-simple-function-calls)        |
+| Replacement on async function calls               |    ✔️     |        [9](#Replacement-with-async-function-calls)         |
+| Nested function calls                             |    ✔️     |                [10](#Nested-function-calls)                |
+| Dynamic variable construction                     |    ✔️     |            [11](#Dynamic-variable-construction)            |
+| Local variable override                           |    ✔️     |               [12](#local-variable-override)               |
+| Object keys may be used as replacement values     |    ✔️     | [13](#Object-keys-may-be-used-as-replacement-values)       |
+| Declare keys to process and processing order      |    ✔️     |    [14](#Declare-keys-to-process-and-processing-order)     |
+| Automatically merge and collapse nested arrays    |    ✔️     |    [15](#Declare-keys-to-process-and-processing-order)     |
+|                                                   |           |                                                            |
+| **Conditional loading:**                          |           |                 [16](#Conditional-loading)                 |
+| Conditional loading object - load if true         |    ✔️     |          [17](#Conditional-loading-load-if-true)           |
+| Conditional loading object - do not load if false |    ✔️     |      [18](#Conditional-loading-do-not-load-if-false)       |
+| Conditional loading using arrays                  |    ✔️     |          [19](#Conditional-loading-using-arrays)           |
+| Conditional loading object - load if true         |    ✔️     |          [20](#Conditional-loading-load-if-true)           |
+|                                                   |           |                                                            |
+| **Special Handling:**                             |           |                                                            |
+| Expression parsing                                |    ✔️     |                 [21](#Expression-parsing)                  |
+| Interpolation on function content                 |    🔻     |          [22](#Interpolation-on-function-content)          |
+| Value not found                                   |    ✔️     |                   [23](#Value-not-found)                   |
+| Using template key as a query string              |    ✔️     |                                                            |
 
 
 
@@ -847,6 +847,47 @@ console.log(obj);
   "H": false,
   "I": true
 }
+```
+### Conditional Loading objects with Expressions
+JSOI allows combining conditional loading with expressions.  This functionality is supported by combining conditional loading
+and expressions.  The  ```<-IF(expression)``` is supported along with ```<--IF(expression)``` and support for  
+```<-ELSE```.
+
+
+
+#### Example 16
+> The examples below highlight this functionality in yaml since it may be easier to read then json.
+
+ 
+> :one: Consider the following template Object:
+```yaml
+---
+---
+Sub:
+  "<-IF(({{ FirstN }} == 10) && ({{ SecondN }} != 10))":
+    A: 10
+    B: '2'
+    C:
+      D: 'Yes'
+  "<-ELSE":
+    A: 1
+
+
+```
+> :two: With the following keys:
+```yaml
+---
+FirstN: 10
+SecondN: 11
+```
+> :three: When interpolating the following result will be produced:
+```yaml
+---
+Sub:
+  A: 10
+  B: '2'
+  C:
+    D: 'Yes'
 ```
 
 ### Interpolation on function content
