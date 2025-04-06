@@ -886,56 +886,6 @@ and expressions.  The  ```<-IF(expression)``` is supported along with ```<--IF(e
 ```<-ELSE```.
 
 #### Example 16
-> The order of ```<-IF``` and ```<-ELSE``` within the object will not impact the result.
-
-:one: Consider the following template Object:
-```yaml
-Sub:
-  "<-ELSE":
-    A: 1
-
-  "<-IF(({{ FirstN }} == 10) && ({{ SecondN }} != 10))":
-    A: 10
-    B: '2'
-    C:
-      D: 'Yes'
-
-
-```
-:two: With the following keys:
-```yaml
----
-FirstN: 10
-SecondN: 11
-```
-:three: When interpolating the following result will be produced:
-```yaml
-Sub:
-  A: 10
-  B: '2'
-  C:
-    D: 'Yes'
-```
-#### Example 17
-> When using string make sure to wrap them in single quotes
-
-:one:
-```yaml
-"<-IF('{{ DEBUG }}' == 'Yes')":
-  A: Debug is on
-"<-ELSE":
-  A: Debug is off
-```
-:two: With the following keys:
-```yaml
----
-DEBUG: 'Yes'
-```
-:three: When interpolating the following result will be produced:
-```yaml
-A: Debug is on
-```
-#### Example 18
 > The examples below highlight this functionality in yaml since it may be easier to read then json.
 
 :one: Consider the following template Object:
@@ -970,6 +920,56 @@ Sub:
     D: 'Yes'
 ```
 
+#### Example 17
+> The order of ```<-IF``` and ```<-ELSE``` within the object will not impact the result.
+
+:one: Consider the following template Object:
+```yaml
+Sub:
+  "<-ELSE":
+    A: 1
+
+  "<-IF(({{ FirstN }} == 10) && ({{ SecondN }} != 10))":
+    A: 10
+    B: '2'
+    C:
+      D: 'Yes'
+
+
+```
+:two: With the following keys:
+```yaml
+---
+FirstN: 10
+SecondN: 11
+```
+:three: When interpolating the following result will be produced:
+```yaml
+Sub:
+  A: 10
+  B: '2'
+  C:
+    D: 'Yes'
+```
+#### Example 18
+> When using string make sure to wrap them in single quotes
+
+:one:
+```yaml
+"<-IF('{{ DEBUG }}' == 'Yes')":
+  A: Debug is on
+"<-ELSE":
+  A: Debug is off
+```
+:two: With the following keys:
+```yaml
+---
+DEBUG: 'Yes'
+```
+:three: When interpolating the following result will be produced:
+```yaml
+A: Debug is on
+```
 
 ### Interpolation on function content
 This is currently not directly supported, at this point it is left for the user to implement.  However, it is trivial to 
