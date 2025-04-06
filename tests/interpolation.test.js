@@ -402,28 +402,29 @@ describe('Object array tests and loading structured data', () => {
             {A:11, B:"2", C:{D:"Yes"}}
         ]);
     });
-    it("Load primitive data into array - not currently considered",  async () => {
+    it("Load primitive data into array",  async () => {
         const obj = [
             {
-                "<-": '{{ First }}'
+                "<--": '{{ First }}'
             },
             {
-                "<-": '{{ Second }}'
+                "<--": '{{ Second }}'
+            },
+            {
+                "<--": '{{ Third}}'
             }
         ]
         const oi = new ObjectInterpolator(obj, {
             First: 'abc',
-            Second: 10
+            Second: 10,
+            Third: null
         }, { loadObj: (sender, n) => { return {A:n, B:"2", C:{D:"Yes"}}; } });
         const iResult = await oi.interpolate();
-        expect(iResult.nReplacedKeys).toBe(2);
+        expect(iResult.nReplacedKeys).toBe(3);
         expect(obj).toMatchObject([
-             {
-                "<-": 'abc'
-            },
-            {
-                "<-": 10
-            }
+            'abc',
+            10,
+            null
         ]);
     });
     it("Interpolate on keys - with function",  async () => {
@@ -692,6 +693,19 @@ describe('Conditional loading Object With Expressions', () => {
         const iResult = await oi.interpolate();
 
         expect(obj).toStrictEqual({ A:"If 1 Branch wins", B:"If 2 Branch wins" });
+    });
+    it("Conditional Load Test strings - IF/ELSE",  async () => {
+        const obj = {
+            "<-IF('{{ DEBUG }}' == 'Yes')": {A:"Debug is on"},
+            "<-ELSE": { A:"Debug is off" },
+        };
+        const oi = new ObjectInterpolator(obj, {
+            DEBUG: 'Yes',
+
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toStrictEqual({ A:"Debug is on" });
     });
 });
 describe('Conditional loading Array With Expressions', () => {

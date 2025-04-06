@@ -71,8 +71,9 @@ if possible.  To get a quick feel for what this library offers, you may want to 
     * [Conditional Loading objects with Expressions](#conditional-loading-objects-with-expressions)
       * [Example 16](#example-16)
       * [Example 17](#example-17)
-    * [Interpolation on function content](#interpolation-on-function-content)
       * [Example 18](#example-18)
+    * [Interpolation on function content](#interpolation-on-function-content)
+      * [Example 19](#example-19)
     * [Value not found](#value-not-found)
       * [Provide a callback](#provide-a-callback-)
       * [Use a specific predefined behavior](#use-a-specific-predefined-behavior)
@@ -889,8 +890,6 @@ and expressions.  The  ```<-IF(expression)``` is supported along with ```<--IF(e
 
 :one: Consider the following template Object:
 ```yaml
----
----
 Sub:
   "<-ELSE":
     A: 1
@@ -911,15 +910,32 @@ SecondN: 11
 ```
 :three: When interpolating the following result will be produced:
 ```yaml
----
 Sub:
   A: 10
   B: '2'
   C:
     D: 'Yes'
 ```
-
 #### Example 17
+> When using string make sure to wrap them in single quotes
+
+:one:
+```yaml
+"<-IF('{{ DEBUG }}' == 'Yes')":
+  A: Debug is on
+"<-ELSE":
+  A: Debug is off
+```
+:two: With the following keys:
+```yaml
+---
+DEBUG: 'Yes'
+```
+:three: When interpolating the following result will be produced:
+```yaml
+A: Debug is on
+```
+#### Example 18
 > The examples below highlight this functionality in yaml since it may be easier to read then json.
 
 :one: Consider the following template Object:
@@ -962,7 +978,7 @@ gets called, the function has an object to return, but it first must be evaluate
 (something not currently directly supported).  The solution is simply to get the current key value context and invoke 
 an interpolation with this against our object.
 
-#### Example 18
+#### Example 19
 > An example of how you might interpolate over data before being returned by your function.
 
 :one:

@@ -882,7 +882,7 @@ class ObjectInterpolatorBase  {
                     if(parentObj && parentKey) {
                         let wasSetOn = false;
                         const objCandidate = childObj[key];
-                        if ((typeof objCandidate === 'object') && (objCandidate !== null)) {
+                        if (objCandidate !== undefined) {
 
                             // Consider the case where we want to load multiple objects to the same element position on
                             // the parent.  (reference Test case **).  This case is when the parentObj is an array
@@ -1364,7 +1364,7 @@ class TransformKeyExpression {
 
             const expression = key.slice(startIndex + 1, endIndex);
             const useExpression = reverse ? `!(${expression})` : expression;
-            key = `{{->ƒ( '${useExpression}' ) }}`;
+            key = `{{->ƒ( "${useExpression}" ) }}`;
             cmdType = REGX.CMD_KEY_IF_BLOCK_START;
             cmd = cmdPart;
         }
