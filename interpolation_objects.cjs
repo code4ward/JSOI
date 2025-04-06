@@ -345,7 +345,8 @@ const REGX = Object.freeze({
     CMD_KEY_QUEUE_DEL_CHILD_OBJ_IF_EMPTY: '^(<-\\s*false\\s*)|(<--\\s*false\\s*)$',
     CMD_KEY_COPY_INTO_OBJ: '^(<-\\s*true\\s*)|(<-\\s*)$',
     CMD_KEY_COPY_INTO_PARENT_OBJ: '^(<--\\s*true\\s*)|(<--\\s*)$',
-
+    CMD_KEY_IF_BLOCK_START: '^(<--|<-)\\s*(IF\\().*',
+    CMD_KEY_ELSE_BLOCK: '^(<--|<-)\\s*(ELSE)$'
 });
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -958,6 +959,8 @@ class ObjectInterpolatorBase  {
                 const key = useKeys[i]; const value = obj[key];
 
                 if ((typeof value === 'object') && (value !== null)) {
+                    if(!Array.isArray(value))
+                        yield [obj, key, value, keys, objs];
                     keys.push(key); objs.push(value);
                     yield* ObjectInterpolatorBase.iterateObjStrings(value, keys, objs );
                     keys.pop();  objs.pop();
@@ -1000,7 +1003,7 @@ class ObjectInterpolatorBase  {
         this._options.KeyValueContextI = this._options.KeyValueContextI !== undefined ?
             this._options.KeyValueContextI : KeyValueContextI;
 
-        this._nPass = 2;
+        this._nPass = 3;
     }
     //-----------------------------------------------------------------------------------------------------------------
     //
@@ -1031,34 +1034,17 @@ class ObjectInterpolatorBase  {
         return useValue;
 
     }
+    getKeyInterpolator(replaceKeyValues, childObj, key, value) { return null; }
     //-----------------------------------------------------------------------------------------------------------------
     // Keys can hold replacement parameters, which act as commands
     //-----------------------------------------------------------------------------------------------------------------
     async doInterpolateKey(replaceKeyValues, childObj, key, value){
-        let nReplacedKeys = 0;
-        let useValue = key;
+        let result = { nReplacedKeys: 0, key: key };
+        const keyInterpolator =  this.getKeyInterpolator(replaceKeyValues, childObj, key, value);
+        if(keyInterpolator)
+            result = await keyInterpolator.interpolate();
 
-        for(let i = 0; i < this._nPass; i++) {
-            const stringInterpolator = new StringInterpolator(useValue, replaceKeyValues, {
-                TrackCurlyBrackets: true, ...this._options,
-                ReplaceNotFoundHandler:  (templateVar, key) => {
-                    // Return the value to be used as the replace parameter.  Note the caller may set the action,
-                    // which may result in this key being deleted on the object (see code below, where we test the
-                    // action against the delete value
-                    return this.notifyReplaceNotFound(replaceKeyValues, templateVar, key, null,
-                        (newActionValue) => undefined);
-                }
-            });
-
-            const nextReplace = await stringInterpolator.sInterpolate();
-            if (nextReplace !== useValue) {
-                nReplacedKeys++;
-                useValue = nextReplace;
-            } else
-                break;
-        }
-
-        return { nReplacedKeys: nReplacedKeys, key: useValue };
+        return result;
 
     }
     //-----------------------------------------------------------------------------------------------------------------
@@ -1229,7 +1215,7 @@ class ObjectInterpolatorBase  {
 
                     if(parentObj && parentKey) {
                         const objCandidate = childObj[key];
-                        if ((typeof objCandidate === 'object') && (objCandidate !== null)) {
+                        if (objCandidate !== undefined) {
 
                             // Consider the case where we want to load multiple objects to the same element position on
                             // the parent.  (reference Test case **).  This case is when the parentObj is an array
@@ -1613,7 +1599,6 @@ class EvaluateFunctions extends ParseFunctionCalls {
 //  invoked.  The resulting value will be used as the replacement parameter
 //
 //---------------------------------------------------------------------------------------------------------------------
-
 class ObjectInterpolator extends ObjectInterpolatorBase {
     static convertToString(value) {
         let result = value;
@@ -1661,7 +1646,12 @@ class ObjectInterpolator extends ObjectInterpolatorBase {
             '_': (sender, value) => ObjectInterpolator.convertToString(value)
         };
     }
-
+    //-----------------------------------------------------------------------------------------------------------------
+    //
+    //-----------------------------------------------------------------------------------------------------------------
+    getKeyInterpolator(replaceKeyValues, childObj, key, value) {
+        return new KeyInterpolator(key, replaceKeyValues, {}, {ChildObj: childObj});
+    }
     //-----------------------------------------------------------------------------------------------------------------
     //
     //-----------------------------------------------------------------------------------------------------------------
@@ -1675,6 +1665,129 @@ class ObjectInterpolator extends ObjectInterpolatorBase {
         else {
             return super.notifyReplaceNotFound(keyValueContext, templateVar, key, parentReplaceNotFoundHandler, setActionI);
         }
+    }
+}
+
+class TransformKeyExpression {
+    static validateTransformMatch(match) { return Array.isArray(match) && (match.length === 3); }
+    constructor(key, childObj) {
+        this._key = key;
+        this._childObj = childObj;
+    }
+    //-----------------------------------------------------------------------------------------------------------------
+    // The goal of this function is to identify Keys in the form 1: '<-IF(expression)' or '<--IF(expression)' and
+    // transform them to form 2: {{->ƒ( '${expression}' ) }}.  Externally, at the interface level, the first form is
+    // clearer and easier to understand.
+    //
+    // Returns object containing:
+    //   Cmd - will be an empty string if the key was not transformed or either <- or <-- (if it was transformed).
+    //   Key - will be the transformed string or the unchanged key (when Cmd is an empty string).
+    //-----------------------------------------------------------------------------------------------------------------
+    transformFromIf(key, wholeMatchString, cmdPart, reverse = false) {
+        let cmd = "";
+        let cmdType = "";
+
+        const endIndex = key.lastIndexOf(")");
+        const startIndex = wholeMatchString.indexOf("(");
+        if((endIndex === wholeMatchString.length - 1) && (startIndex !== -1)) {
+
+            const expression = key.slice(startIndex + 1, endIndex);
+            const useExpression = reverse ? `!(${expression})` : expression;
+            key = `{{->ƒ( "${useExpression}" ) }}`;
+            cmdType = REGX.CMD_KEY_IF_BLOCK_START;
+            cmd = cmdPart;
+        }
+        return { CmdType: cmdType, Cmd: cmd, Key: key }
+    }
+    reverseTransformFirstIfKey(key, wholeMatchString, cmdPart) {
+        let result = null;
+
+        for(const [siblingKey, value] of Object.entries(this._childObj)) {
+            const matchIf = siblingKey.match(new RegExp(REGX.CMD_KEY_IF_BLOCK_START, 'i'));
+            if(TransformKeyExpression.validateTransformMatch(matchIf)) {
+                result = this.transformFromIf(siblingKey, matchIf[0], matchIf[1], true  /* reverse */);
+                break;
+            }
+        }
+        return result !== null ? result : { CmdType: REGX.CMD_KEY_ELSE_BLOCK, Cmd: cmdPart, Key: `false` }
+
+    }
+    transformElse(key, wholeMatchString, cmdPart) {
+        const result = this.reverseTransformFirstIfKey(key, wholeMatchString, cmdPart);
+        const cmd = result ? result.Cmd : "";
+        const useKey = result ? result.Key : key;
+        return { CmdType: REGX.CMD_KEY_ELSE_BLOCK, Cmd: cmd, Key: useKey };
+    }
+    transform() {
+        const key = this._key.trim();
+        let result = { CmdType: "", Cmd: "", Key: key };
+        const matchIf = key.match(new RegExp(REGX.CMD_KEY_IF_BLOCK_START, 'i'));
+        if(TransformKeyExpression.validateTransformMatch(matchIf))
+            result = this.transformFromIf(key, matchIf[0], matchIf[1]);
+        else {
+            const matchElse = key.match(new RegExp(REGX.CMD_KEY_ELSE_BLOCK, 'i'));
+            if(TransformKeyExpression.validateTransformMatch(matchElse))
+                result = this.transformElse(key, matchElse[0], matchElse[1]);
+        }
+
+        return result;
+    }
+
+}
+//---------------------------------------------------------------------------------------------------------------------
+//
+// This type is used specifically in cases of key replacement.  There is a bit of recursion here as this class
+// subclasses from ObjectInterpolator.  Further, this class is instantiated as part of the 'getKeyInterpolator' method.
+// To avoid infinite recursion we must insure we do not re-interpolate over key, we do this by turning off this
+// unneeded functionality by overriding 'getKeyInterpolator' and returning null.
+// It is generally idea to reuse ObjectInterpolator as the base class, since we can add the power of object expression
+// parsing, without duplicating the functionality.  However, this approach is subject to change and generally supporting
+// of else branch will require some rework on this class.
+//
+//---------------------------------------------------------------------------------------------------------------------
+class KeyInterpolator extends ObjectInterpolator {
+
+    //-----------------------------------------------------------------------------------------------------------------
+    //
+    //-----------------------------------------------------------------------------------------------------------------
+    constructor(key, keyValues, parseFContext, options = {}) {
+
+        const transformKeyExpression = new TransformKeyExpression(key, options.ChildObj);
+        const transformData = transformKeyExpression.transform();
+        super({Key: transformData.Key}, keyValues.getKeyValues(), parseFContext, options);
+
+        this._cmdType = transformData.CmdType;
+        this._cmd = transformData.Cmd;
+
+        this._originalKey = key;
+    }
+    getChildObj() { return this.getOptions().ChildObj; }
+    //-----------------------------------------------------------------------------------------------------------------
+    // Turn off interpolation over the key
+    //-----------------------------------------------------------------------------------------------------------------
+    getKeyInterpolator(replaceKeyValues, childObj, key, value) { return null; }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    // We override 'interpolate', to support slightly different return interface:
+    //   { nReplacedKeys: n, key: s }
+    // Additionally, the goal is to transform the key in cases where the IF directive is used
+    //-----------------------------------------------------------------------------------------------------------------
+    async interpolate() {
+        const iResult = await super.interpolate();
+
+        let resultingKey;
+
+        // 1. The key was transformed, we should assemble the key to the following form:
+            // * '<-<result> or <--<result>' where result is the actual interpolation result.
+        // Note case 1 may be a problem in cases where the replaceable keys are not currently resolvable.  We may detect
+        // this upfront with:  ((new SimpleTagParser(templateString)).has())
+        if(this._cmd)
+            resultingKey = `${this._cmd}${iResult.obj.Key}`;
+        else
+            resultingKey = iResult.obj.Key;
+
+
+        return { nReplacedKeys: iResult.nReplacedKeys, key: resultingKey };
     }
 }
 
