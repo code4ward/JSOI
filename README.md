@@ -904,7 +904,6 @@ Sub:
 
 :two: With the following keys:
 ```yaml
----
 FirstN: 10
 SecondN: 11
 ```
@@ -931,8 +930,6 @@ Sub:
     B: '2'
     C:
       D: 'Yes'
-
-
 ```
 :two: With the following keys:
 ```yaml
@@ -947,6 +944,7 @@ Sub:
   C:
     D: 'Yes'
 ```
+
 #### Example 18
 > When using string make sure to wrap them in single quotes
 
@@ -960,7 +958,6 @@ Sub:
 ```
 :two: With the following keys:
 ```yaml
----
 Sub:
   DEBUG: 'Yes'
 ```
