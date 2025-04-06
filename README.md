@@ -890,8 +890,6 @@ and expressions.  The  ```<-IF(expression)``` is supported along with ```<--IF(e
 
 :one: Consider the following template Object:
 ```yaml
----
----
 Sub:
   "<-IF(({{ FirstN }} == 10) && ({{ SecondN }} != 10))":
     A: 10
@@ -912,7 +910,6 @@ SecondN: 11
 ```
 :three: When interpolating the following result will be produced:
 ```yaml
----
 Sub:
   A: 10
   B: '2'
@@ -939,7 +936,6 @@ Sub:
 ```
 :two: With the following keys:
 ```yaml
----
 FirstN: 10
 SecondN: 11
 ```
@@ -956,15 +952,17 @@ Sub:
 
 :one:
 ```yaml
-"<-IF('{{ DEBUG }}' == 'Yes')":
-  A: Debug is on
-"<-ELSE":
-  A: Debug is off
+Sub:
+  "<-IF('{{ DEBUG }}' == 'Yes')":
+    A: Debug is on
+  "<-ELSE":
+    A: Debug is off
 ```
 :two: With the following keys:
 ```yaml
 ---
-DEBUG: 'Yes'
+Sub:
+  DEBUG: 'Yes'
 ```
 :three: When interpolating the following result will be produced:
 ```yaml
