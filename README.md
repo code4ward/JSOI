@@ -18,7 +18,7 @@ if possible.  To get a quick feel for what this library offers, you may want to 
 [feature matrix](#Feature-matrix), or go through the first example listed in the [The Basics](#The-Basics) section.
 
 <!-- TOC -->
-* [JS Objects Interpolation - JSOI](#js-objects-interpolation---jsoi)
+* [JS Objects Interpolation - JSOI ![npm version](https://img.shields.io/npm/v/jsoi-lib.svg)](#js-objects-interpolation---jsoi-)
   * [Introduction](#introduction)
   * [The Basics](#the-basics)
     * [Example 1](#example-1)
@@ -68,8 +68,12 @@ if possible.  To get a quick feel for what this library offers, you may want to 
     * [Expression parsing](#expression-parsing)
       * [Supported operators](#supported-operators)
       * [Example 15](#example-15)
-    * [Interpolation on function content](#interpolation-on-function-content)
+    * [Conditional Loading objects with Expressions](#conditional-loading-objects-with-expressions)
       * [Example 16](#example-16)
+      * [Example 17](#example-17)
+      * [Example 18](#example-18)
+    * [Interpolation on function content](#interpolation-on-function-content)
+      * [Example 19](#example-19)
     * [Value not found](#value-not-found)
       * [Provide a callback](#provide-a-callback-)
       * [Use a specific predefined behavior](#use-a-specific-predefined-behavior)
@@ -91,6 +95,7 @@ below:
 
 > In the example below you can see how you can replace variables anywhere in an object.
 
+:one:
 ```javascript
 const obj = {
   OuterObject: {
@@ -107,6 +112,7 @@ const oi = new ObjectInterpolator(obj, {
 const rResult = await oi.interpolate();
 console.log(obj);
 ```
+:two:
 ***Output***
 ```text
 {
@@ -183,39 +189,39 @@ To interpolate over a simple string you can create an instance of ```StringInter
 The return valued is a new string.
 
 ### Feature matrix
-| Feature                                           | Supported |                      Reference                       |
-|---------------------------------------------------|:---------:|:----------------------------------------------------:|
-| **Simple Strings**                                |           |                                                      |
-| Simple string interpolation                       |    ✔️     |          [1](#Simple-string-interpolation)           |
-|                                                   |           |                                                      |
-| **Type conversions:**                             |           |                [2](#Type-Conversions)                |
-| Primitive type conversion                         |    ✔️     |                [3](#Primitive-types)                 |
-| Object type conversion                            |    ✔️     |          [4](#Nested-object-interpolation)           |
-| Array type conversion                             |    ✔️     |          [5](#Nested-object-interpolation)           |
-| Automatic type conversion                         |    🔻     |           [6](#Automatic-type-conversion)            |
-|                                                   |           |                                                      |
-| **Core**                                          |           |                                                      |
-| Nested object interpolation                       |    ✔️     |          [7](#Nested-object-interpolation)           |
-| Replacement with simple function calls            |    ✔️     |     [8](#Replacement-with-simple-function-calls)     |
-| Replacement on async function calls               |    ✔️     |     [9](#Replacement-with-async-function-calls)      |
-| Nested function calls                             |    ✔️     |             [10](#Nested-function-calls)             |
-| Dynamic variable construction                     |    ✔️     |         [11](#Dynamic-variable-construction)         |
-| Local variable override                           |    ✔️     |            [12](#local-variable-override)            |
-| Object keys may be used as replacement values     |    ✔️     | [13](#Object-keys-may-be-used-as-replacement-values) |
-| Declare keys to process and processing order      |    ✔️     | [14](#Declare-keys-to-process-and-processing-order)  |
-| Automatically merge and collapse nested arrays    |    ✔️     | [15](#Declare-keys-to-process-and-processing-order)  |
-|                                                   |           |                                                      |
-| **Conditional loading:**                          |           |              [16](#Conditional-loading)              |
-| Conditional loading object - load if true         |    ✔️     |       [17](#Conditional-loading-load-if-true)        |
-| Conditional loading object - do not load if false |    ✔️     |   [18](#Conditional-loading-do-not-load-if-false)    |
-| Conditional loading using arrays                  |    ✔️     |       [19](#Conditional-loading-using-arrays)        |
-| Conditional loading object - load if true         |    ✔️     |       [20](#Conditional-loading-load-if-true)        |
-|                                                   |           |                                                      |
-| **Special Handling:**                             |           |                                                      |
-| Expression parsing                                |    ✔️     |              [21](#Expression-parsing)               |
-| Interpolation on function content                 |    🔻     |       [22](#Interpolation-on-function-content)       |
-| Value not found                                   |    ✔️     |                [23](#Value-not-found)                |
-| Using template key as a query string              |    ✔️     |                                                      |
+| Feature                                                | Supported |                      Reference                       |
+|--------------------------------------------------------|:---------:|:----------------------------------------------------:|
+| **Simple Strings**                                     |           |                                                      |
+| Simple string interpolation                            |    ✔️     |          [1](#Simple-string-interpolation)           |
+|                                                        |           |                                                      |
+| **Type conversions:**                                  |           |                [2](#Type-Conversions)                |
+| Primitive type conversion                              |    ✔️     |                [3](#Primitive-types)                 |
+| Object type conversion                                 |    ✔️     |          [4](#Nested-object-interpolation)           |
+| Array type conversion                                  |    ✔️     |          [5](#Nested-object-interpolation)           |
+| Automatic type conversion                              |    🔻     |           [6](#Automatic-type-conversion)            |
+|                                                        |           |                                                      |
+| **Core**                                               |           |                                                      |
+| Nested object interpolation                            |    ✔️     |          [7](#Nested-object-interpolation)           |
+| Replacement with simple function calls                 |    ✔️     |     [8](#Replacement-with-simple-function-calls)     |
+| Replacement on async function calls                    |    ✔️     |     [9](#Replacement-with-async-function-calls)      |
+| Nested function calls                                  |    ✔️     |             [10](#Nested-function-calls)             |
+| Dynamic variable construction                          |    ✔️     |         [11](#Dynamic-variable-construction)         |
+| Local variable override                                |    ✔️     |            [12](#local-variable-override)            |
+| Object keys may be used as replacement values          |    ✔️     | [13](#Object-keys-may-be-used-as-replacement-values) |
+| Declare keys to process and processing order           |    ✔️     | [14](#Declare-keys-to-process-and-processing-order)  |
+| Automatically merge and collapse nested arrays         |    ✔️     | [15](#Declare-keys-to-process-and-processing-order)  |
+|                                                        |           |                                                      |
+| **Conditional loading:**                               |           |              [16](#Conditional-loading)              |
+| Conditional loading object - load if true              |    ✔️     |       [17](#Conditional-loading-load-if-true)        |
+| Conditional loading object - do not load if false      |    ✔️     |   [18](#Conditional-loading-do-not-load-if-false)    |
+| Conditional loading using arrays                       |    ✔️     |       [19](#Conditional-loading-using-arrays)        |
+|                                                        |           |                                                      |
+| **Expressions and Special Handling:**                  |           |                                                      |
+| Expression parsing                                     |    ✔️     |              [21](#Expression-parsing)               |
+| Conditional Loading objects (IF/ELSE) with Expressions |    ✔️     | [22](#Conditional-Loading-objects-with-Expressions)  |
+| Interpolation on function content                      |    🔻     |       [22](#Interpolation-on-function-content)       |
+| Value not found                                        |    ✔️     |                [23](#Value-not-found)                |
+| Using template key as a query string                   |    ✔️     |                                                      |
 
 
 
@@ -224,6 +230,8 @@ You can do simple string interpolation with the ```StringInterpolator``` class. 
 
 #### Example 2
 > In the example below a simple string is interpolated with the ```StringInterpolator``` class. 
+ 
+:one:
 ```javascript
 const si = new StringInterpolator("Hello {{HOW}} {{ARE}} {{YOU}}?", {
     ARE: "are",
@@ -232,7 +240,7 @@ const si = new StringInterpolator("Hello {{HOW}} {{ARE}} {{YOU}}?", {
 const name = await si.sInterpolate();
 console.log(name);
 ```
-
+:two:
 ***Output***
 ```text
 "Hello  are you?"
@@ -267,6 +275,7 @@ object template.  In addition to this, arrays may also contain template variable
 ##### Example 3
 > Below is another nested object example, interpolation is done over the whole object.
 
+:one:
 ```javascript
 const obj = {
   OuterObject: {
@@ -287,7 +296,7 @@ const oi = new ObjectInterpolator(obj, {
 const rResult = await oi.interpolate();
 console.log(obj);
 ```
-
+:two:
 ***Output***
 ```text
 {
@@ -308,6 +317,7 @@ for basic object and array replacement is also supported.
 ##### Example 4
 > Notice in this example how types are preserved.
 
+:one:
 ```javascript
     const obj = {
   One: "{{One}}",
@@ -335,6 +345,7 @@ const rResult = await oi.interpolate();
 if (rResult.nReplacedKeys === 9)
   console.log(obj)
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -380,6 +391,7 @@ Of course parameters to the function may also be replaceable parameters.  The ex
 #### Example 5
 > User defined functions provide the ability to extend JSOI and parameters can be interpolated.
 
+:one:
 ```javascript
 const parseFContext = {
   concatString: (sender, a, b) => a.concat(b),
@@ -394,6 +406,7 @@ const oi = new ObjectInterpolator(obj, {
 const rResult = await oi.interpolate();
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -413,6 +426,7 @@ one completes, the next two are processed in parallel (HouseNo and Street).
 #### Example 6
 > In this demonstration an object is constructed via asynchronous function calls.
 
+:one:
 ```javascript
 const wait = ms => new Promise((r, j) => setTimeout(r, ms));
 const data = {
@@ -442,6 +456,7 @@ const rResult = await oi.interpolate();
 
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -455,6 +470,7 @@ JSOI supports nested function calls, consider the example below.
 #### Example 7
 > In the example below you can see how parameters to user defined functions may be deeply nested.
 
+:one:
 ```javascript
 
 const parseFContext = {
@@ -470,6 +486,7 @@ const oi = new ObjectInterpolator(obj, {}, parseFContext);
 const rResult = await oi.interpolate();
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -484,6 +501,7 @@ may be constructed, based on the value of TestNumber.
 #### Example 8
 > Replace variables dynamically constructed.
 
+:one:
 ```javascript
 const obj = {Test: "{{RunTest-{{TestNumber}}}}"}
 const oi = new ObjectInterpolator(obj, {
@@ -494,6 +512,7 @@ const oi = new ObjectInterpolator(obj, {
 const rResult = await oi.interpolate();
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -533,9 +552,10 @@ In the example below, notice the dependancy order problem on the first two keys:
 2. ```AllNumbersAndSomething``` cannot be fully resolved until ```AllNumbers``` is resolved, therefore ```AllNumbers``` should be
 processed first.
 
-The example below shows you how to loop until all keys are resolved.  Note, as we already mentioned you may specify the keyorder
+> The example below shows you how to loop until all keys are resolved.  Note, as we already mentioned you may specify the keyorder
 and avoid looping if you like.
 
+:one:
 ```javascript
 const obj = {
     AllNumbersAndSomethingAndNothing: "{{AllNumbersAndSomething}} and {{Nothing}}",
@@ -558,6 +578,10 @@ do {
     nReplacedKeys = (await oi.interpolate()).nReplacedKeys;
     nIterations++;
 } while(nReplacedKeys > 0);
+
+```
+:two:
+```javascript
 expect(nIterations).toBe(4);
 expect(obj).toMatchObject({
     AllNumbers: "1 2 3",
@@ -565,10 +589,7 @@ expect(obj).toMatchObject({
     AllNumbersAndSomethingAndNothing: "1 2 3 and Something and Nothing",
     NoMatch: "{{NoMatch}}",
 });
-
 ```
-
-
 #### Declare keys to process and processing order
 To ensure only certain keys are processed and to enforce a processing order you can add the ```__ProcessKeys__``` 
 array to indicate which keys should be processed and the order of processing.
@@ -580,6 +601,7 @@ the dependency on ```UseTest1```.
 ##### Example 10
 > An example of choosing the order of key processing.
 
+:one:
 ```javascript
 const obj = {
   UseTest2: "{{UseTest1}}",
@@ -594,6 +616,7 @@ const oi = new ObjectInterpolator(obj, {
 const rResult = await oi.interpolate();
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -639,6 +662,7 @@ becomes empty due to the load operation.
 ##### Example 11
 > An example of loading data into a parent object.
 
+:one:
 ```javascript
 const obj = {
   A: {
@@ -655,6 +679,7 @@ await oi.interpolate();
 
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -684,6 +709,7 @@ Exactly like the previous true case, the false value may be parameterized
 ##### Example 12
 > An example of conditionally loading data into a parent object.
 
+:one:
 ```javascript
 const obj = {
   A: {
@@ -708,6 +734,7 @@ const oi = new ObjectInterpolator(obj, {
 await oi.interpolate();
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -724,6 +751,7 @@ parent array at index.
 ##### Example 13
 > An example of loading data into an array element, notice how the added a array is merged in place.
 
+:one:
 ```javascript
 const obj = [
   {
@@ -739,7 +767,7 @@ const oi = new ObjectInterpolator(obj, {}, {
 await oi.interpolate();
 console.log(obj);
 ```
-
+:two:
 ***Output:***
 ```text
 [
@@ -752,6 +780,7 @@ console.log(obj);
 ##### Example 14
 > In the example below multiple array objects are loaded.
 
+:one:
 ```javascript
 const obj = [
   {
@@ -774,6 +803,7 @@ const rResult = await oi.interpolate();
 
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 [
@@ -814,6 +844,7 @@ proper parsing.
 #### Example 15
 > Combining all expression examples above, the example below parameterizes the number 1.
 
+:one:
 ```javascript
 const obj = {
   A: "{{ ->ƒ( '({{One}} == {{One}}) ? (2 * 5.{{One}}) : (4 / 3)' ) }}",
@@ -834,6 +865,7 @@ const oi = new ObjectInterpolator(obj, {
 await oi.interpolate();
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 {
@@ -848,6 +880,91 @@ console.log(obj);
   "I": true
 }
 ```
+### Conditional Loading objects with Expressions
+JSOI allows combining conditional loading with expressions.  This functionality is supported by combining conditional loading
+and expressions.  The  ```<-IF(expression)``` is supported along with ```<--IF(expression)``` and support for  
+```<-ELSE```.
+
+#### Example 16
+> The examples below highlight this functionality in yaml since it may be easier to read then json.
+
+:one: Consider the following template Object:
+```yaml
+Sub:
+  "<-IF(({{ FirstN }} == 10) && ({{ SecondN }} != 10))":
+    A: 10
+    B: '2'
+    C:
+      D: 'Yes'
+  "<-ELSE":
+    A: 1
+
+
+```
+
+:two: With the following keys:
+```yaml
+FirstN: 10
+SecondN: 11
+```
+:three: When interpolating the following result will be produced:
+```yaml
+Sub:
+  A: 10
+  B: '2'
+  C:
+    D: 'Yes'
+```
+
+#### Example 17
+> The order of ```<-IF``` and ```<-ELSE``` within the object will not impact the result.
+
+:one: Consider the following template Object:
+```yaml
+Sub:
+  "<-ELSE":
+    A: 1
+
+  "<-IF(({{ FirstN }} == 10) && ({{ SecondN }} != 10))":
+    A: 10
+    B: '2'
+    C:
+      D: 'Yes'
+```
+:two: With the following keys:
+```yaml
+FirstN: 10
+SecondN: 11
+```
+:three: When interpolating the following result will be produced:
+```yaml
+Sub:
+  A: 10
+  B: '2'
+  C:
+    D: 'Yes'
+```
+
+#### Example 18
+> When using string make sure to wrap them in single quotes
+
+:one:
+```yaml
+Sub:
+  "<-IF('{{ DEBUG }}' == 'Yes')":
+    A: Debug is on
+  "<-ELSE":
+    A: Debug is off
+```
+:two: With the following keys:
+```yaml
+Sub:
+  DEBUG: 'Yes'
+```
+:three: When interpolating the following result will be produced:
+```yaml
+A: Debug is on
+```
 
 ### Interpolation on function content
 This is currently not directly supported, at this point it is left for the user to implement.  However, it is trivial to 
@@ -856,9 +973,10 @@ gets called, the function has an object to return, but it first must be evaluate
 (something not currently directly supported).  The solution is simply to get the current key value context and invoke 
 an interpolation with this against our object.
 
-#### Example 16
+#### Example 19
 > An example of how you might interpolate over data before being returned by your function.
 
+:one:
 ```javascript
 const obj = [
   {
@@ -879,6 +997,7 @@ const oi = new ObjectInterpolator(obj, {Name: "ConfigName1"}, {
 await oi.interpolate();
 console.log(obj);
 ```
+:two:
 ***Output:***
 ```text
 [
@@ -896,6 +1015,7 @@ a value to use as your replacement value.  Alternatively you may return a subtyp
 
 > The example below shows how to set up a not found callback.
 
+:one:
 ```javascript
 const oi = new ObjectInterpolator(obj, {/* keyValue context */}, { /* Function context */}, {
   ReplaceNotFoundHandler: (templateVar, key) => {
@@ -913,6 +1033,7 @@ set the option.  The description below will explain the possible values and thei
 
 > The example below demonstrates how to set this variable to instruct JSOI to remove the key value from the object.
 
+:one:
 ```javascript
  const oi = new ObjectInterpolator(obj, {/* keyValue context */}, { /* Function context */}, {
   ActionOnNotFound: ReplaceObjectAction.ACTION_DELETE
@@ -923,6 +1044,8 @@ set the option.  The description below will explain the possible values and thei
 It is possible to instruct JSOI to use simple dot notation for indexing into objects.  For example given the object below 
 it may be useful to reference values like this: ```{{ FindFunObj.UseThisKey }}```, which would then use the value:
 "This is the value" as your replacement key.
+
+:one:
 ```javascript
 const obj = {
             FindValue: "This is the value",
@@ -932,6 +1055,8 @@ const obj = {
 #### Query string example 
 In order to enable query string support, you will need to modify the default key value context object.  The code
 below demonstrates how to do this:
+
+:one:
 ```javascript
 const oi = new CustomObjectInterpolator(obj,{ Test: { Fun: { UseThisKey: "This is the value" } }},
     {}, { KeyValueContextI: QueryObjKeyValueContextI });

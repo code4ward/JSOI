@@ -382,7 +382,7 @@ describe('Object array tests and loading structured data', () => {
             }
         ]);
     });
-    it("Load Structured object into object",  async () => {
+    it("Load Structured object into array",  async () => {
         const obj = [
             {
                 "<-": '{{->loadObj({{FirstN}})}}'
@@ -402,7 +402,31 @@ describe('Object array tests and loading structured data', () => {
             {A:11, B:"2", C:{D:"Yes"}}
         ]);
     });
-
+    it("Load primitive data into array",  async () => {
+        const obj = [
+            {
+                "<--": '{{ First }}'
+            },
+            {
+                "<--": '{{ Second }}'
+            },
+            {
+                "<--": '{{ Third}}'
+            }
+        ]
+        const oi = new ObjectInterpolator(obj, {
+            First: 'abc',
+            Second: 10,
+            Third: null
+        }, { loadObj: (sender, n) => { return {A:n, B:"2", C:{D:"Yes"}}; } });
+        const iResult = await oi.interpolate();
+        expect(iResult.nReplacedKeys).toBe(3);
+        expect(obj).toMatchObject([
+            'abc',
+            10,
+            null
+        ]);
+    });
     it("Interpolate on keys - with function",  async () => {
         const obj = {
             a: {
@@ -492,7 +516,7 @@ describe('Object array tests and loading structured data', () => {
         }, { loadObj: (sender, n) => { return {A:n, B:"2", C:{D:"Yes"}}; } });
         const iResult = await oi.interpolate();
         expect(iResult.nReplacedKeys).toBe(1);
-        expect(obj).toMatchObject({});
+        expect(obj).toStrictEqual({});
     });
 
     it("Load Structured object conditional 'true' into object - root",  async () => {
@@ -519,7 +543,7 @@ describe('Object array tests and loading structured data', () => {
         }, { loadObj: (sender, n) => { return {A:n, B:"2", C:{D:"Yes"}}; } });
         const iResult = await oi.interpolate();
         expect(iResult.nReplacedKeys).toBe(1);
-        expect(obj).toMatchObject({});
+        expect(obj).toStrictEqual({});
     });
     it("Load Structured object conditional 'false' object - not root (with object not empty)",  async () => {
         const obj = {
@@ -541,6 +565,7 @@ describe('Object array tests and loading structured data', () => {
             Test3: {"<-true": '{{->loadObj({{FirstN}})}}'},
 
         };
+
         const oi = new ObjectInterpolator(obj, {
             ShouldLoadFirst: true,
             FirstN: 10,
@@ -554,6 +579,157 @@ describe('Object array tests and loading structured data', () => {
             Test3: {A:10, B:"2", C:{D:"Yes"}}
         });
     });
+
+
+});
+describe('Conditional loading Object With Expressions', () => {
+    it("Load Structured object conditional with expression",  async () => {
+        const obj = { Sub: {
+                "<-IF(({{ FirstN }} == 10) && ({{ SecondN }} != 10))": {A: 10, B: "2", C: {D: "Yes"}},
+                "<-ELSE": {A: 1}
+            }
+        };
+        const oi = new ObjectInterpolator(obj, {
+            FirstN: 10,
+            SecondN: 11
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toMatchObject({Sub:{A:10, B:"2", C:{D:"Yes"}}});
+    });
+    it("Conditional Load - Do Not Load Structured object IF with expression",  async () => {
+        const obj = {
+            "<-IF(({{ FirstN }} == 10) && ({{ SecondN }} == 10))": {A:10, B:"2", C:{D:"Yes"}}
+        };
+        const oi = new ObjectInterpolator(obj, {
+            FirstN: 10,
+            SecondN: 11
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toStrictEqual({});
+    });
+    it("Conditional Load - Load Structured object IF with stored expression",  async () => {
+        const obj = {
+            "<-IF({{ LoadIf }})": {A:10, B:"2", C:{D:"Yes"}},
+        };
+        const oi = new ObjectInterpolator(obj, {
+            LoadIf: '{{ FirstN }} == 10',
+            FirstN: 10,
+            SecondN: 11
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toMatchObject({A:10, B:"2", C:{D:"Yes"}});
+    });
+    it("Conditional Load - IF/ELSE - else wins",  async () => {
+        const obj = {
+            "<-IF({{ LoadIf }})": {A:10, B:"2", C:{D:"Yes"}},
+            "<-ELSE": { A:"Else Branch wins" },
+        };
+        const oi = new ObjectInterpolator(obj, {
+            LoadIf: '!({{ FirstN }} == 10)',
+            FirstN: 10,
+            SecondN: 11
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toStrictEqual({ A:"Else Branch wins" });
+    });
+    it("Conditional Load - IF/ELSE - if wins",  async () => {
+        const obj = {
+            "<-IF({{ LoadIf }})": { A:"If Branch wins" },
+            "<-ELSE": { A:"Else Should not win" },
+        };
+        const oi = new ObjectInterpolator(obj, {
+            LoadIf: '({{ FirstN }} == 10)',
+            FirstN: 10,
+            SecondN: 11
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toStrictEqual({ A:"If Branch wins" });
+    });
+    it("Conditional Load (reversed) - IF/ELSE - else wins",  async () => {
+        const obj = {
+            "<-ELSE": { A:"Else Branch wins" },
+            "<-IF({{ LoadIf }})": {A:10, B:"2", C:{D:"Yes"}},
+        };
+        const oi = new ObjectInterpolator(obj, {
+            LoadIf: '!({{ FirstN }} == 10)',
+            FirstN: 10,
+            SecondN: 11
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toStrictEqual({ A:"Else Branch wins" });
+    });
+    it("Conditional Load (reversed)- IF/ELSE - if wins",  async () => {
+        const obj = {
+            "<-ELSE": { A:"Else Should not win" },
+            "<-IF({{ LoadIf }})": { A:"If Branch wins" },
+        };
+        const oi = new ObjectInterpolator(obj, {
+            LoadIf: '({{ FirstN }} == 10)',
+            FirstN: 10,
+            SecondN: 11
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toStrictEqual({ A:"If Branch wins" });
+    });
+    it("Conditional Load multiple independent if branches- IF/ELSE - if wins",  async () => {
+        const obj = {
+            "<-IF({{ LoadIf1 }})": { A:"If 1 Branch wins" },
+            "<-IF({{ LoadIf2 }})": { B:"If 2 Branch wins" },
+            "<-ELSE": { A:"Else Should not win" },
+        };
+        const oi = new ObjectInterpolator(obj, {
+            LoadIf1: '({{ FirstN }} == 10)',
+            LoadIf2: '({{ FirstN }} == 10)',
+            FirstN: 10,
+            SecondN: 11
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toStrictEqual({ A:"If 1 Branch wins", B:"If 2 Branch wins" });
+    });
+    it("Conditional Load Test strings - IF/ELSE",  async () => {
+        const obj = {
+            "<-IF('{{ DEBUG }}' == 'Yes')": {A:"Debug is on"},
+            "<-ELSE": { A:"Debug is off" },
+        };
+        const oi = new ObjectInterpolator(obj, {
+            DEBUG: 'Yes',
+
+        }, { });
+        const iResult = await oi.interpolate();
+
+        expect(obj).toStrictEqual({ A:"Debug is on" });
+    });
+});
+describe('Conditional loading Array With Expressions', () => {
+    it("Load Structured array conditional with expression",  async () => {
+        const obj = [
+            {
+                "<-IF({{ FirstN }} == 10)": '{{->loadObj({{FirstN}})}}'
+            },
+            {
+                "<-IF({{ FirstN }} == 10)": '{{->loadObj({{SecondN}})}}'
+            }
+        ]
+        const oi = new ObjectInterpolator(obj, {
+            FirstN: 10,
+            SecondN: 11
+        }, { loadObj: (sender, n) => { return {A:n, B:"2", C:{D:"Yes"}}; } });
+        const iResult = await oi.interpolate();
+        expect(iResult.nReplacedKeys).toBe(8);
+        expect(obj).toMatchObject([
+            {A:10, B:"2", C:{D:"Yes"}},
+            {A:11, B:"2", C:{D:"Yes"}}
+        ]);
+    });
+
 });
 describe('More object loading', () => {
 
