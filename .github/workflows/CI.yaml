@@ -72,4 +72,3 @@ jobs:
                   version: "${{ needs.test-build-version.outputs.version }}"
                 }
               });
-
