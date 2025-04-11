@@ -12,7 +12,7 @@
 
 
 ## Introduction
-In simple terms JSOI is designed specifically for templating javascript objects.  It is
+In simple terms, JSOI is designed specifically for templating javascript objects.  It is
 designed to aid in building dynamic and conditional configuration objects while preserving types in output
 if possible.  To get a quick feel for what this library offers, you may want to jump directly to the 
 [feature matrix](#Feature-matrix), or go through the first example listed in the [The Basics](#The-Basics) section.
