@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.output_version.outputs.version }}
-
     steps:
       - name: Assign the version we are building
         run: |
