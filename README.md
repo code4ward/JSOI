@@ -12,10 +12,10 @@
 
 
 ## Introduction
-In simple terms JSOI is designed specifically for templating javascript objects.  It is
+In simple terms, JSOI is designed specifically to template JavaScript objects. It is
 designed to aid in building dynamic and conditional configuration objects while preserving types in output
 if possible.  To get a quick feel for what this library offers, you may want to jump directly to the 
-[feature matrix](#Feature-matrix), or go through the first example listed in the [The Basics](#The-Basics) section.
+[feature matrix](#Feature-matrix) or go through the first example listed in the [The Basics](#The-Basics) section.
 
 <!-- TOC -->
 * [JS Objects Interpolation - JSOI ![npm version](https://img.shields.io/npm/v/jsoi-lib.svg)](#js-objects-interpolation---jsoi-)
@@ -129,7 +129,7 @@ console.log(obj);
 There are no dependencies within this library on other third party libraries.
 
 ## Building and running unit tests
-You can build the library which includes linting dist folder will include output library minimized
+You can build the library which includes unit tests, linting, and code coverage.  The resulting files will be outputted to the dist folder.
 
 — **Command**:
 ```shell
@@ -137,13 +137,13 @@ npm run build
 ```
 ## Deploying in your project
 ### Prebuilt javascript
-The last build version and instructions on deployment, minimized and non minimized versions can be found here:  [JSOI distribution](https://code4ward.github.io/JSOI/).
+The last build version and instructions on deployment, minimized and non-minimized versions can be found here:  [JSOI distribution](https://code4ward.github.io/JSOI/).
 
 ### Install with npm
 Currently not supported
 
 ## How to use
-In this section we will describe how to use JSOI, the features available with examples and common use cases.
+In this section we will describe how to use JSOI, as well as the features available, with examples and common use cases.
 
 ### Interface class
 #### ObjectInterpolator
@@ -161,16 +161,15 @@ values:
 * The options to use.
 
 ##### Options
-When constructing the interpolation object you can provide options.  Below is a summary of available options
+When constructing the interpolation object you can provide options.  Below is a summary of the available options:
 
-|   Option Name    | Description                                                                              |                    Default Value                    |                                                                       possible values                                                                        | Example                                                                                             |
-|:----------------:|------------------------------------------------------------------------------------------|:---------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------:|-----------------------------------------------------------------------------------------------------|
-|     CopyObj      | When set to true interpolation will be performed over a copy of the provided object.     |                        false                        |                                                                         true\|false                                                                          | const oi = new ObjectInterpolator(obj, { /* ... */ }, { /* ... */}, { CopyObj: true });             |
-| KeyValueContextI | Defines the internal interface to use when getting a value from the key value context.   | undefined (internally defaults to KeyValueContextI) | Besides the default value you may also make use of ```QueryObjKeyValueContextI```.  This interface allow you to reference into your object with dot notation | [Refer to the section below for more information](#Template-key-as-a-query-string)                  |
+|   Option Name    | Description                                                                            |                    Default Value                    |                                                                         possible values                                                                         | Example                                                                                 |
+|:----------------:|----------------------------------------------------------------------------------------|:---------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------:|-----------------------------------------------------------------------------------------|
+|     CopyObj      | When set to true, interpolation will be performed over a copy of the provided object.  |                        false                        |                                                                           true\|false                                                                           | const oi = new ObjectInterpolator(obj, { /* ... */ }, { /* ... */}, { CopyObj: true }); |
+| KeyValueContextI | Defines the internal interface to use when getting a value from the key value context. | undefined (internally defaults to KeyValueContextI) | Besides the default value, you may also make use of ```QueryObjKeyValueContextI```.  This interface allows you to reference into your object with dot notation. | [Refer to the section below for more information](#Template-key-as-a-query-string).     |
 
 
-After you have an instance of ```ObjectInterpolator``` you will simply invoke the ```interpolate``` method.   
-on the object
+After you have an instance of ```ObjectInterpolator```, you will simply invoke the ```interpolate``` method on the object.
 
 ##### Returns
 ```javascript
@@ -181,7 +180,7 @@ a numeric value indicating how many keys were replaced:
 
 
 ####  StringInterpolator 
-To interpolate over a simple string you can create an instance of ```StringInterpolator``` which takes the form:
+To interpolate over a simple string, you can create an instance of ```StringInterpolator``` which takes the form:
 ```javascript
  const si = new StringInterpolator( sTemplate, { /* keyValues :object | KeyValueContextI */ }, { /* options: object */});
 ```
@@ -226,10 +225,10 @@ The return valued is a new string.
 
 
 ### Simple string interpolation
-You can do simple string interpolation with the ```StringInterpolator``` class.  The example below covers this case
+You can do simple string interpolation with the ```StringInterpolator``` class.  The example below covers this case:
 
 #### Example 2
-> In the example below a simple string is interpolated with the ```StringInterpolator``` class. 
+> In the example below, a simple string is interpolated with the ```StringInterpolator``` class: 
  
 :one:
 ```javascript
@@ -250,8 +249,8 @@ console.log(name);
 ```{TrackCurlyBrackets: true}```
 
 ### Type Conversions
-JSOI attempts to maintain types of replacement parameters.  This is possible in most cases as long as your parameterized 
-string only contains one replacement variable.  For example a string replacing a single type may be converted as in:
+JSOI attempts to maintain types of replacement parameters. This is possible in most cases as long as your parameterized 
+string only contains one replacement variable.  For example, a string replacing a single type may be converted as in:
 
 ```Numbers: "{{Number1}}"```
 
@@ -311,7 +310,7 @@ console.log(obj);
 ```
 
 #### Primitive types
-JSOI supports type conversion on most javascript primitive types (except ```undefined```).  Support,
+JSOI supports type conversion on most JavaScript primitive types (except ```undefined```).  Support,
 for basic object and array replacement is also supported.
 
 ##### Example 4
@@ -362,12 +361,12 @@ if (rResult.nReplacedKeys === 9)
 ```
 
 #### Automatic type conversion
-Since JSOI allows multiple replacements within one key value pair, it might seem possible that it would also do automatic 
+Since JSOI allows multiple replacements within one key-value pair, it might seem possible that it would also do automatic 
 type conversion.  This is currently not supported, consider for example:
 
 ```Numbers: "{{{{Number1}}{{Number2}}{{Number3}}}}"```
 
-In the case where all replacement values were numbers the result of the replacement operation on the above string might 
+In the case, where all replacement values were numbers, the result of the replacement operation on the above string might 
 be:
 
 ```Numbers: "123"``` as opposed to  ~~```Numbers: 123```~~
@@ -376,7 +375,7 @@ This is not to say you cannot define a function to do your type conversion (see 
 for more information on defining your own functions).
 
 ### Replacement with simple function calls
-In some cases it is convenient to replace values via a function call, this can be achieved by passing a function
+In some cases, it is convenient to replace values via a function call. This can be achieved by passing a function
 context as a separate parameter into: ```ObjectInterpolator```.  The function call is denoted by the ```->``` 
 symbol, followed by the function name ```->functionName```, and any function parameters as in: 
 ```->functionName(param1, param2, paramN-1, paramsN)```.  
@@ -385,7 +384,7 @@ This whole function call must also be wrapped in curly braces as in:
 
 ```{{->functionName(param1, param2, paramN-1, paramsN)}}```
 
-Of course parameters to the function may also be replaceable parameters.  The example below illustrates these concepts.   
+Of course, parameters to the function may also be replaceable parameters.  The example below illustrates these concepts:   
 
 
 #### Example 5
@@ -418,13 +417,13 @@ should be quoted to ensure whitespace separation.
 
 ### Replacement with async function calls
 Following the same function format as above, replacement functions may also be asynchronous.  Multiple replacements on the same 
-key value pair will be performed in parallel.  Replacements over multiple key value pairs are performed synchronously.  
+key-value pair will be performed in parallel.  Replacements over multiple key-value pairs are performed synchronously.  
 
 Consider the example below, the first two "simulateFetch" (FirstName and LastName) calls are processed in parallel, when this
 one completes, the next two are processed in parallel (HouseNo and Street).
 
 #### Example 6
-> In this demonstration an object is constructed via asynchronous function calls.
+> In this demonstration, an object is constructed via asynchronous function calls.
 
 :one:
 ```javascript
@@ -465,10 +464,10 @@ console.log(obj);
 }
 ```
 ### Nested function calls
-JSOI supports nested function calls, consider the example below.
+JSOI supports nested function calls. Consider the example below:
 
 #### Example 7
-> In the example below you can see how parameters to user defined functions may be deeply nested.
+> In the example below, you can see how parameters to user-defined functions may be deeply nested.
 
 :one:
 ```javascript
@@ -495,8 +494,8 @@ console.log(obj);
 ```
 
 ### Dynamic variable construction
-Nesting variables allow for dynamic variable construction.  In the example below two possible variables
-may be constructed, based on the value of TestNumber.
+Nesting variables allow for dynamic variable construction.  In the example below, two possible variables
+may be constructed based on the value of TestNumber.
 
 #### Example 8
 > Replace variables dynamically constructed.
@@ -521,8 +520,8 @@ console.log(obj);
 ```
 
 ### Local variable override
-Variable value may be extracted from either the passed in variable context or from the object itself.
-For Example consider the case where your interpolation obj looks like this:
+The variable value may be extracted from either the passed in variable context or from the object itself.
+For Example, consider the case where your interpolation obj looks like this:
 ```javascript
     const obj = { UseLocalVar: 1, Test: "{{UseLocalVar}}" }
 ```
@@ -531,28 +530,28 @@ UseLocalVar exists in the object and will be used.
 ```javascript
     const obj = { UseLocalVar: 1, Test: 1 }
 ```
-**NOTE:**  In some cases of local variable use, key order may be important.  If there is a dependency on kv pairs being 
+**NOTE:**  In some cases of local variable use, key order may be important.  If there is a dependency on key-value pairs being 
 fully rendered, before use, consider formally declaring processing order on keys (see [next section](#Declare-keys-and-key-processing-order))
 
 #### Object keys may be used as replacement values
-JSOI, processes replacement params in order of key iteration.  This has the unintended consequence of creating a dependency 
+JSOI processes replacement params in order of key iteration.  This has the unintended consequence of creating a dependency 
 on key order in the replacement object.  There are two approaches to dealing with key order, the first is to interpolate in 
-a loop the second is to provide the order in which you would like to process the object keys (see [Declare keys to process and processing order](#Declare-keys-to-process-and-processing-order).
+a loop, the second is to provide the order in which you would like to process the object keys (see [Declare keys to process and processing order](#Declare-keys-to-process-and-processing-order).
 The example below highlights how to interpolate in a loop where there is a dependency order on object keys.  Keep in mind,
-you will only care about this and the next section, if your keys, in your replacement object have a dependency on another 
-replacement key, in the object you are interpolating over.  Keep in mind also, there are two sources of replacement values:  
+that you will only care about this in the next section if your keys, in your replacement object, have a dependency on another 
+replacement key in the object you are interpolating over.  Keep in mind also, there are two sources of replacement values:  
 1.  The replacement object itself (local variable override).
 2.  The keyValue params object (primary source).
 
 
 ##### Example 9
-In the example below, notice the dependancy order problem on the first two keys:
+In the example below, notice the dependency order problem on the first two keys:
 1. Before ```AllNumbersAndSomethingAndNothing``` can be resolved ```AllNumbersAndSomething``` must be resolved.  We must process,
 ```AllNumbersAndSomething``` first.  
 2. ```AllNumbersAndSomething``` cannot be fully resolved until ```AllNumbers``` is resolved, therefore ```AllNumbers``` should be
 processed first.
 
-> The example below shows you how to loop until all keys are resolved.  Note, as we already mentioned you may specify the keyorder
+> The example below shows you how to loop until all keys are resolved.  Note, as we already mentioned you may specify the key order
 and avoid looping if you like.
 
 :one:
@@ -591,10 +590,10 @@ expect(obj).toMatchObject({
 });
 ```
 #### Declare keys to process and processing order
-To ensure only certain keys are processed and to enforce a processing order you can add the ```__ProcessKeys__``` 
-array to indicate which keys should be processed and the order of processing.
+To ensure only certain keys are processed, and to enforce a processing order, you can add the ```__ProcessKeys__``` 
+array to indicate which keys should be processed, and the order of processing.
 
-The example below ensure that ```UseTest1``` is fully rendered before processing ```UseTest2```.  In 
+The example below ensures that ```UseTest1``` is fully rendered before processing ```UseTest2```.  In 
 this case, this is important since processing in normal order would leave UseTest2 un-rendered, due to
 the dependency on ```UseTest1```.  
 
@@ -628,10 +627,10 @@ console.log(obj);
 
 ### Conditional loading
 Conditional loading allows you to load a child object into a parent object, within your template, if a condition is met.
-Although this functionality may seem arbitrary on the surface, it turns out it is extremely useful.  Consider a case 
+Although this functionality may seem arbitrary on the surface, it is extremely useful.  Consider a case 
 where you need to assemble a configuration object from multiple sources. 
 
-**NOTE**:  Interpolating loaded content is left for the user (see [below](#Interpolation-on-function-content)) 
+**NOTE**:  Interpolating loaded content is left for the user (see [below](#Interpolation-on-function-content)). 
 
 The command to invoke this operation is placed within the object key and is denoted by the symbol:
 ```
@@ -643,17 +642,17 @@ There are a few forms of conditional loading:
 2. Positive (load object): ```{'<--true': '{{ValueToLoad}}'}```
 3. Negative (do not load object): ```{'<--false': '{{ValueToLoad}}'}```
 
-Generally speaking the goal of conditional loading is to load a child object into its parent and remove the child object
+Generally speaking, the goal of conditional loading is to load a child object into its parent and remove the child object
 if the remaining object is empty.  The graphic below should help highlight the point:
 
 <p align="center"> <img src="conditional_loading.png"></p>
 
 From the image above, you can see the object "p" contains another object "A".  The object "A" has the load directive set on 
-its key.  When the load completes the content (red box), is replaced with the loaded content.
+its key.  When the load completes, the content (red box) is replaced with the loaded content.
  
 
 #### Unconditional Loading
-In the example below we see the root object containing another object "A".  This object contains only one key value pair 
+In the example below, we see the root object containing another object "A".  This object contains only one key-value pair, 
 and the key of this object is set to the unconditional loading directive.
 
 **NOTE:** The process of loading the data into the parent will force the deletion of the child object if the child object
@@ -688,7 +687,7 @@ console.log(obj);
 ```
 
 #### Conditional loading load if true
-In the simplest case of conditional loading (true case), you have a key that take the following form:
+In the simplest case of conditional loading (true case), you have a key that takes the following form:
 
 ```"<--true": 'value'```
 
@@ -698,11 +697,11 @@ In practice, however, the boolean true value would normally be parameterized, fo
 
 
 #### Conditional loading do not load if false
-In the simplest case of conditional loading (false case), you have a key that take the following form:
+In the simplest case of conditional loading (false case), you have a key that takes the following form:
 
 ```"<--false": 'value'```
 
-Exactly like the previous true case, the false value may be parameterized 
+Exactly like the previous true case, the false value may be parameterized: 
 
 ```"<--{{FalseValue}}": 'value'```
  
@@ -744,12 +743,12 @@ console.log(obj);
 ```
 
 #### Conditional loading using arrays
-In the previous example we made use of loading child objects into parent objects.  Generally the same rules apply to
-arrays.  However, with arrays, when collapsing child object into it's parent the child array is merged into the 
-parent array at index.
+In the previous example, we made use of loading child objects into parent objects.  Generally, the same rules apply to
+arrays.  However, with arrays, when collapsing a child object into its parent, the child array is merged into the 
+parent array at the index.
 
 ##### Example 13
-> An example of loading data into an array element, notice how the added a array is merged in place.
+> An example of loading data into an array element, notice how the added array is merged in place.
 
 :one:
 ```javascript
@@ -778,7 +777,7 @@ console.log(obj);
 ```
 
 ##### Example 14
-> In the example below multiple array objects are loaded.
+> In the example below, multiple array objects are loaded.
 
 :one:
 ```javascript
@@ -817,14 +816,14 @@ console.log(obj);
 ```
 ### Expression parsing
 JSOI supports expression parsing allowing for combining basic mathematical and logical expressions together with ternary
-conditions.  To invoke the expression parser, you should use one of the builtin expression functions.  There are currently
+conditions.  To invoke the expression parser, you should use one of the built-in expression functions.  There are currently
 two forms of the function, short and long:
 
 1. ->Exp('1+2')
 2. ->ƒ('1+2')
 
 #### Supported operators
-The table below list currently supported operators within the expression parsing feature.
+The table below lists currently supported operators within the expression parsing feature.
 
 | Symbol  | Description              |              Form                                       |                   Example                   |              Output               |
 |:-------:|--------------------------|:-------------------------------------------------------:|:-------------------------------------------:|:---------------------------------:|
@@ -880,13 +879,13 @@ console.log(obj);
   "I": true
 }
 ```
-### Conditional Loading objects with Expressions
+### Conditional Loading Objects with Expressions
 JSOI allows combining conditional loading with expressions.  This functionality is supported by combining conditional loading
 and expressions.  The  ```<-IF(expression)``` is supported along with ```<--IF(expression)``` and support for  
 ```<-ELSE```.
 
 #### Example 16
-> The examples below highlight this functionality in yaml since it may be easier to read then json.
+> The examples below highlight this functionality in YAML since it may be easier to read than JSON.
 
 :one: Consider the following template Object:
 ```yaml
@@ -946,7 +945,7 @@ Sub:
 ```
 
 #### Example 18
-> When using string make sure to wrap them in single quotes
+> When using strings, make sure to wrap them in single quotes
 
 :one:
 ```yaml
@@ -961,16 +960,16 @@ Sub:
 Sub:
   DEBUG: 'Yes'
 ```
-:three: When interpolating the following result will be produced:
+:three: When interpolating, the following result will be produced:
 ```yaml
 A: Debug is on
 ```
 
 ### Interpolation on function content
-This is currently not directly supported, at this point it is left for the user to implement.  However, it is trivial to 
+This is currently not directly supported, at this point, it is left for the user to implement.  However, it is trivial to 
 implement within the function context.  The example below highlights the solution.  When our custom function, ```loadObj```, 
-gets called, the function has an object to return, but it first must be evaluated against the existing key value context 
-(something not currently directly supported).  The solution is simply to get the current key value context and invoke 
+gets called, the function has an object to return, but it first must be evaluated against the existing key-value context 
+(something not currently directly supported).  The solution is simply to get the current key-value context and invoke 
 an interpolation with this against our object.
 
 #### Example 19
@@ -1005,12 +1004,12 @@ console.log(obj);
 ]
 ```
 ### Value not found
-In some cases your tagged value (```{{ValueToReplace}}```) which you would like replaced, is NOT in the provided key 
-value list.  Generally, there are two broad ways to deal with this error condition.
+In some cases, your tagged value (```{{ValueToReplace}}```), which you would like replaced, is NOT in the provided key-value list.  
+Generally, there are two broad ways to deal with this error condition.
 
 #### Provide a callback 
-You may provide a callback, set in the options object defined by ```ReplaceNotFoundHandler```.  This call back may return 
-a value to use as your replacement value.  Alternatively you may return a subtype of ```ReplaceObjectAction``` 
+You may provide a callback, set in the options object defined by ```ReplaceNotFoundHandler```.  This callback may return 
+a value to use as your replacement value.  Alternatively, you may return a subtype of ```ReplaceObjectAction``` 
 (see below for a description of possible return values).  
 
 > The example below shows how to set up a not found callback.
@@ -1041,7 +1040,7 @@ set the option.  The description below will explain the possible values and thei
 
 ```
 ### Template key as a query string
-It is possible to instruct JSOI to use simple dot notation for indexing into objects.  For example given the object below 
+It is possible to instruct JSOI to use simple dot notation for indexing into objects.  For example, given the object below, 
 it may be useful to reference values like this: ```{{ FindFunObj.UseThisKey }}```, which would then use the value:
 "This is the value" as your replacement key.
 
@@ -1053,7 +1052,7 @@ const obj = {
         }
 ```
 #### Query string example 
-In order to enable query string support, you will need to modify the default key value context object.  The code
+In order to enable query string support, you will need to modify the default key-value context object.  The code
 below demonstrates how to do this:
 
 :one:
@@ -1065,7 +1064,7 @@ await oi.interpolate();
 ```
 
 ## Prior Art
-There are a number of other javascript string interpolation libraries which do templating, probably the most well know 
+There are several other JavaScript string interpolation libraries which do templating, probably the most well-known 
 is:  [Mustache.js](https://github.com/janl/mustache.js?tab=readme-ov-file).  
 
 
