@@ -26,7 +26,7 @@ if possible.  To get a quick feel for what this library offers, you may want to 
   * [Building and running unit tests](#building-and-running-unit-tests)
   * [Deploying in your project](#deploying-in-your-project)
     * [Prebuilt javascript](#prebuilt-javascript)
-    * [Install with npm](#install-with-npm)
+    * [Install](#install)
   * [How to use](#how-to-use)
     * [Interface class](#interface-class)
       * [ObjectInterpolator](#objectinterpolator)
@@ -68,7 +68,7 @@ if possible.  To get a quick feel for what this library offers, you may want to 
     * [Expression parsing](#expression-parsing)
       * [Supported operators](#supported-operators)
       * [Example 15](#example-15)
-    * [Conditional Loading objects with Expressions](#conditional-loading-objects-with-expressions)
+    * [Conditional Loading Objects with Expressions](#conditional-loading-objects-with-expressions)
       * [Example 16](#example-16)
       * [Example 17](#example-17)
       * [Example 18](#example-18)
@@ -139,8 +139,10 @@ npm run build
 ### Prebuilt javascript
 The last build version and instructions on deployment, minimized and non-minimized versions can be found here:  [JSOI distribution](https://code4ward.github.io/JSOI/).
 
-### Install with npm
-Currently not supported
+### Install
+JSOI is automatically deployed to npm.  Installation details are available either on npm or GIT pages:
+* [JSOI-lib on npmjs](https://www.npmjs.com/package/jsoi-lib)
+* [JSOI-lib on github](https://code4ward.github.io/JSOI/)
 
 ## How to use
 In this section we will describe how to use JSOI, as well as the features available, with examples and common use cases.
