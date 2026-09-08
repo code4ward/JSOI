@@ -17,9 +17,155 @@ designed to aid in building dynamic and conditional configuration objects while 
 if possible.  To get a quick feel for what this library offers, you may want to jump directly to the 
 [feature matrix](#Feature-matrix) or go through the first example listed in the [The Basics](#The-Basics) section.
 
+JSOI is particularly suitable for:
+
+* Generating environment-, customer-, or tenant-specific configuration objects.
+* Creating parameterized API payloads, queries, test fixtures, and workflow definitions.
+* Assembling nested objects and arrays conditionally from reusable templates.
+* Building low-code systems where configuration authors need conditions without arbitrary JavaScript.
+* Resolving template values asynchronously through application-provided callbacks.
+* Sharing the same object-templating approach across Node.js, browsers, and Google Apps Script.
+
+## Use cases
+
+JSOI is useful when the template itself is structured data rather than a block of text. The static parts of an object
+can describe what an application should do, while interpolation supplies the data, calculations, and conditional
+structure needed for a particular run.
+
+### PDF and document automation
+
+A PDF layout can be recorded as an object containing both text templates and fixed placement metadata:
+
+```javascript
+const pdfTemplate = {
+  TextPointMappers: [
+    {
+      Text: "{{Realtor.Name1}} ({{Realtor.Company1}})",
+      PdfPoint: {PageN: 1, XL: 124, YB: 697, Align: "Left"}
+    },
+    {
+      Text: "{{SellerData.FirstName1}} {{SellerData.LastName1}} / " +
+            "{{SellerData.FirstName2}} {{SellerData.LastName2}}",
+      PdfPoint: {PageN: 1, XL: 84, YB: 672, Align: "Left"}
+    }
+  ]
+};
+
+const oi = new ObjectInterpolator(pdfTemplate, formData, {}, {
+  KeyValueContextI: QueryObjKeyValueContextI
+});
+await oi.interpolate();
+```
+
+The result can be passed directly to a PDF writer. Placement coordinates and alignment remain typed values, while the
+text is populated from nested application data. The same approach can be used for reports, certificates, contracts,
+labels, and other coordinate- or component-based documents.
+
+### Object-construction DSLs
+
+User-defined functions allow a template to act as a small declarative language for constructing domain objects:
+
+```javascript
+const template = {
+  CreateFTI: "{{->formatCurrency({{Unit6RentalDetails.RentalRate6}}, 0) }} " +
+             "{{Unit6RentalDetails.RentalPeriod6}}"
+};
+
+const functions = {
+  formatCurrency: (sender, value, precision) =>
+    Number(value).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: precision,
+      maximumFractionDigits: precision
+    })
+};
+
+const oi = new ObjectInterpolator(template, propertyData, functions, {
+  KeyValueContextI: QueryObjKeyValueContextI
+});
+await oi.interpolate();
+```
+
+This keeps formatting and construction rules readable in the template while the application supplies the available
+operations. Functions may also be asynchronous, making the same pattern useful when values come from services,
+databases, or other application-managed sources.
+
+### Dynamic and remote value resolution
+
+A template value can be supplied on demand by an asynchronous function. This allows the host application to resolve
+current values from a server, registry, database, or other dynamic source during interpolation:
+
+```javascript
+const template = {
+  CurrentRate: "{{->getRemoteValue('current-rate')}}",
+  RemoteRules: "{{->getRemoteValue('active-rules')}}"
+};
+
+const functions = {
+  getRemoteValue: async (sender, key) => {
+    const response = await fetch(`/api/template-values/${encodeURIComponent(key)}`);
+    if (!response.ok)
+      throw new Error(`Unable to resolve template value: ${key}`);
+
+    const data = await response.json();
+    return data.value;
+  }
+};
+
+const oi = new ObjectInterpolator(template, {}, functions);
+await oi.interpolate();
+```
+
+When the function occupies the entire template value, its returned type can be preserved. A remote call may therefore
+supply a number, boolean, object, or array rather than only text. The callback remains under application control, so
+authentication, authorization, caching, retry behavior, and validation can follow the requirements of the host system.
+
+### Calculated and conditional configuration
+
+The built-in expression parser supports mathematical, comparison, boolean, and ternary expressions. Calculated values
+can then be referenced by later fields in the same object:
+
+```javascript
+const pricing = {
+  Subtotal: 1200,
+  Tax: 180,
+  Total: "{{->Exp( '{{Subtotal}} + {{Tax}}' )}}",
+  RequiresApproval: "{{->Exp( '{{Total}} > {{ApprovalLimit}}' )}}"
+};
+
+const oi = new ObjectInterpolator(pricing, {ApprovalLimit: 1000});
+await oi.interpolate();
+```
+
+Expressions can also drive JSOI's conditional-loading directives, allowing complete objects or array entries to be
+included, merged, or omitted. This is useful for rules-driven configuration without embedding general-purpose
+JavaScript in the template.
+
+### Additional applications
+
+* Building environment, customer, and tenant-specific application configurations.
+* Generating API request bodies, search queries, and integration payloads.
+* Describing workflow steps whose parameters or presence depend on runtime data.
+* Producing realistic test fixtures and scenario-specific mock data.
+* Enriching structured objects asynchronously before passing them to another library or service.
+* Constructing schema-driven UI component trees, forms, tables, dashboards, and map descriptors.
+* Generating document layouts for reports, contracts, certificates, labels, and other structured output.
+* Assembling feature or capability-specific configurations by including only applicable object branches.
+* Producing notification definitions that combine recipients, delivery metadata, and templated content.
+* Creating product, pricing, quotation, and rules-driven configuration objects with calculated values.
+* Generating deployment manifests and service configuration from a shared source description.
+* Producing different target-specific artifacts from the same underlying data and template conventions.
+
 <!-- TOC -->
 * [JS Objects Interpolation - JSOI ![npm version](https://img.shields.io/npm/v/jsoi-lib.svg)](#js-objects-interpolation---jsoi-)
   * [Introduction](#introduction)
+  * [Use cases](#use-cases)
+    * [PDF and document automation](#pdf-and-document-automation)
+    * [Object-construction DSLs](#object-construction-dsls)
+    * [Dynamic and remote value resolution](#dynamic-and-remote-value-resolution)
+    * [Calculated and conditional configuration](#calculated-and-conditional-configuration)
+    * [Additional applications](#additional-applications)
   * [The Basics](#the-basics)
     * [Example 1](#example-1)
   * [Dependencies](#dependencies)
