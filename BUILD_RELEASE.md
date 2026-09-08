@@ -97,9 +97,35 @@ Each `deploy:*` command performs the following sequence:
    - Publishes `dist` to the `gh-pages` branch.
    - Creates and pushes a distribution tag such as `v1.1.1-dist`.
 
-Pushing the main version tag triggers `.github/workflows/CI.yaml`. GitHub Actions checks out that tag, installs dependencies with Node.js 20, runs the full build, uploads coverage, and starts `.github/workflows/publish-npm.yaml`. The publish workflow rebuilds the tagged version, verifies that the tag matches `dist/package.json`, and publishes `jsoi-lib` using the repository's `NPM_TOKEN` secret.
+Pushing the main version tag triggers `.github/workflows/CI.yaml`. GitHub Actions checks out that tag, installs dependencies with Node.js 20, runs the full build, uploads coverage, and starts `.github/workflows/publish-npm.yaml`.
 
-Local npm authentication is not required for this automated publication path. The GitHub repository must have valid `NPM_TOKEN` and `CODECOV_TOKEN` secrets.
+The npm publish workflow then:
+
+1. Checks out the requested release tag.
+2. Uses Node.js 24 and the npm registry configuration supplied by `actions/setup-node`.
+3. Installs the exact dependency tree with `npm ci`.
+4. Rebuilds the tagged source.
+5. Verifies that the Git tag matches the version in `dist/package.json`.
+6. Runs `npm publish` from `dist` using npm trusted publishing.
+
+Trusted publishing uses GitHub Actions' short-lived OpenID Connect identity. It does not use an `NPM_TOKEN` or `NODE_AUTH_TOKEN` secret. The publish workflow must retain the following permission:
+
+```yaml
+permissions:
+  contents: read
+  id-token: write
+```
+
+The npm trusted-publisher connection for `jsoi-lib` must match the workflow exactly:
+
+- GitHub organization or user: `code4ward`
+- Repository: `JSOI`
+- Workflow filename: `publish-npm.yaml`
+- Environment: blank, unless the workflow is later changed to use a GitHub environment
+
+The repository URLs in `package.json` and `build_assets/package_dist.json` should remain `https://github.com/code4ward/JSOI.git`, including the exact repository-name casing.
+
+Local npm authentication is not required for this automated publication path. `CODECOV_TOKEN` is still used by the CI workflow for coverage uploads. After the first trusted-publishing release succeeds, remove or revoke the old npm automation token and delete the repository's `NPM_TOKEN` secret if it still exists.
 
 ## Verify the release
 
@@ -107,15 +133,16 @@ After the workflows finish:
 
 1. Confirm that the tag workflow and npm publish workflow succeeded in GitHub Actions.
 2. Confirm the expected package version is available on npm.
-3. Confirm GitHub Pages contains the updated distribution.
-4. Confirm both release tags exist:
+3. Confirm that npm displays provenance for the published package version.
+4. Confirm GitHub Pages contains the updated distribution.
+5. Confirm both release tags exist:
 
    ```powershell
    git fetch --tags
    git tag --list "v*" --sort=-version:refname
    ```
 
-5. Confirm the local repository is back on `master` and clean:
+6. Confirm the local repository is back on `master` and clean:
 
    ```powershell
    git branch --show-current
@@ -128,6 +155,9 @@ After the workflows finish:
 - Check the current branch because the GitHub Pages helper temporarily switches to `gh-pages`.
 - Check whether the main version tag already exists locally or remotely before rerunning `npm version`.
 - Check GitHub Actions before manually publishing to npm. The tag may already have triggered publication.
+- If a tag points to a commit containing a broken publish workflow, do not reuse that tag. Commit the workflow fix and create the next patch release so the new tag contains the corrected workflow.
+- For example, after a failed `v1.1.1` publication, commit and push the fixes, then release `v1.1.2` with `npm run deploy:patch`.
+- If trusted publishing fails, verify the npm publisher settings, repository-name casing, workflow filename, `id-token: write` permission, and the Node/npm versions used by the publish job.
 - Do not delete or recreate published npm versions. npm versions are immutable; correct a bad release with a new patch version.
 - Do not force-push `master`, `gh-pages`, or release tags as part of routine recovery.
 
